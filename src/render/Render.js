@@ -1,4 +1,4 @@
-import {Start} from './component/Start'
+import {Start} from './component/start/Start'
 import ReactDOM from 'react-dom/client'
 import React from 'react'
 export const windows =
@@ -15,13 +15,9 @@ export class Render
 	{
 		this.actions=actions
 		this.root = ReactDOM.createRoot(document.getElementById('root'))
-		this.window_render = [{key:windows.START,func:Start},
-								{key:windows.BUNDLE_MANAGE},
-								{key:windows.COURSE_MANAGE},
-								{key:windows.USER_MANAGE}
-							]
-		
-		
+		this.window_render = []
+
+		this.add(windows.START,Start)
 	}
 
 	render(state)
@@ -52,5 +48,11 @@ export class Render
 	getActions()
 	{
 		return this.actions
+	}
+
+	add(key, func)
+	{
+		var arr = [...this.window_render, {key:key, func:func}]
+		this.window_render = arr
 	}
 }

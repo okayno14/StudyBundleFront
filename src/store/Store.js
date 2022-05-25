@@ -11,10 +11,10 @@ export class Store
 			currentWindow: windows.START
 		}
 		this.actionType_exec = []
-		this.bind(actionTypes.LOGIN,this.loginExec)
+		this.add(actionTypes.LOGIN,this.loginExec)
 	}
 	
-	bind(key, func)
+	add(key, func)
 	{
 		var arr = [...this.actionType_exec, {key:key, func:func}]
 		this.actionType_exec = arr
