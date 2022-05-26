@@ -4,19 +4,15 @@ import './index.css'
 export const Bundle = (props)=>
 <div>
 	<h1 className='Header'>Редактор Бандлов</h1>
-	<div className='Container'>
-		<div>
-			<div >
-				<div className='Left'>BundleListSearch_Component</div>
-				<div className='Right'>BundleTextSearch_Component</div>
-			</div>
-		</div>
-		<div>
-			<div>
-				
-				<div className='Left'>BundleReport_Component</div>
-				<div className='Right'>BundleACL_Component</div>
-			</div>
-		</div>
-	</div>
+	
+	<table>
+		<tr>
+			<td><div className='Container'>BundleListSearch_Component</div></td>
+			<td><div className='Container'>BundleTextSearch_Component</div></td>
+		</tr>
+		<tr>
+			<td><div className='Container'>BundleReport_Component</div></td>
+			<td><div className='Container'>BundleACL_Component</div></td>
+		</tr>
+	</table>
 </div>

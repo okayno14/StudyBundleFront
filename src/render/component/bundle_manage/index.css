@@ -7,27 +7,7 @@
 
 .Container
 {
-	position: relative;
-	bottom: 0;
-}
-
-.Left
-{
-	left: 0;
-	top: 0;
-	float: left
-}
-
-.Right
-{
-	right: 0;
-	top: 0;
-	float: right
-}
-
-.DetailsLeft
-{
-	position: absolute;
-	right: 0;
-	top: 0;
+	padding: 16px;
+	border: 1px solid #ccc;
+  	box-sizing: border-box;
 }
