@@ -1,4 +1,6 @@
 import {React} from 'react'
+import {BundleListSearch} from './search/BundleListSearch'
+import {BundleTextSearch} from './search/BundleTextSearch'
 import './index.css'
 
 export const Bundle = (props)=>
@@ -7,7 +9,7 @@ export const Bundle = (props)=>
 	
 	<table>
 		<tr>
-			<td><div className='Container'>BundleListSearch_Component</div></td>
+			<td><BundleListSearch className='Container'/></td>
 			<td><div className='Container'>BundleTextSearch_Component</div></td>
 		</tr>
 		<tr>
