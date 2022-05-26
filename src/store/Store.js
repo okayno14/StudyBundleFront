@@ -7,11 +7,15 @@ export class Store
 	{
 		this.render = render
 		this.actionType_exec = []
-		this.add(actionTypes.LOGIN, this.loginExec)
+		
 		this.state = 
 		{
 			currentWindow: windows.START
 		}
+		this.loginExec = this.loginExec.bind(this)
+		this.moveToBundleExec = this.moveToBundleExec.bind(this)
+		this.add(actionTypes.LOGIN, this.loginExec)
+		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 	}
 	
 	add(key, func)
@@ -22,8 +26,8 @@ export class Store
 
 	dispatch(action)
 	{
-		let {actionType} = action
-		var entry = this.actionType_exec.filter((entry)=>entry.type === actionType)[0]
+		let {type} = action
+		var entry = this.actionType_exec.filter((entry)=>entry.key === type)[0]
 		entry.func(action)
 		this.render.render(this.state)
 	}
@@ -31,7 +35,21 @@ export class Store
 	loginExec(action)
 	{
 		const {type,..._state} = action
-		this.state = {...this.state,..._state}
+		this.state = 
+		{
+			...this.state,
+			currentWindow: windows.CHOICE,
+			..._state
+		}
+	}
+
+	moveToBundleExec(action)
+	{
+		this.state=
+		{
+			...this.state,
+			currentWindow: windows.BUNDLE_MANAGE
+		}
 	}
 
 	getState(){return this.state}

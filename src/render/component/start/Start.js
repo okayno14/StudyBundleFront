@@ -6,7 +6,7 @@ export const Start = (props)=>
 <div>
 	<h2>Login Form</h2>
 		<div className="IMG_Container">
-			<img src="logo192.png" alt="Avatar" className="Avatar"/>
+			<img src="1.jpg" alt="Avatar" className="Avatar"/>
 		</div>
 		<div className="Container">
 			<label htmlFor="email"><b>Username</b></label>
@@ -29,7 +29,6 @@ export const Start = (props)=>
 					{
 						actions.login(result)
 					})
-
 				}}>
 				Login
 			</button>

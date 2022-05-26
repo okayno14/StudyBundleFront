@@ -1,4 +1,6 @@
 import {Start} from './component/start/Start'
+import {Choice} from './component/choice/Choice'
+import {Bundle} from './component/bundle_manage/Bundle'
 import ReactDOM from 'react-dom/client'
 import React from 'react'
 export const windows =
@@ -6,7 +8,8 @@ export const windows =
 	START:"START",
 	BUNDLE_MANAGE:"BUNDLE",
 	COURSE_MANAGE:"COURSE",
-	USER_MANAGE:"USER"
+	USER_MANAGE:"USER",
+	CHOICE:"CHOICE"
 }
 
 export class Render
@@ -18,6 +21,8 @@ export class Render
 		this.window_render = []
 
 		this.add(windows.START,Start)
+		this.add(windows.CHOICE,Choice)
+		this.add(windows.BUNDLE_MANAGE, Bundle)
 	}
 
 	render(state)
@@ -28,7 +33,7 @@ export class Render
 		this.root.render
 		(
 			<React.StrictMode>
-				<Elem props = {state}/>
+				<Elem state={state} actions = {this.actions}/>
 			</React.StrictMode>
 		)
 	}
