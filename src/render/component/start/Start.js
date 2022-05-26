@@ -1,6 +1,5 @@
 import {React} from 'react'
-import { api } from '../../../index'
-
+import * as API from '../../../API'
 import './index.css'
 
 export const Start = (props)=>
@@ -25,29 +24,11 @@ export const Start = (props)=>
 						email: document.getElementsByName("email")[0].value,
 						pass: document.getElementsByName("pass")[0].value
 					}
-					const xhr = new XMLHttpRequest()
-					let uri = "http://"+api+"/user/login"
-					xhr.open('PUT', uri,true)
-					console.log("Открыт запрос. Метод:"+"PUT "+"URI:"+ uri)
 					
-					xhr.setRequestHeader('Content-Type', 'application/json');
-					xhr.send(JSON.stringify(body))
-					
-					xhr.onload=()=>
+					API.login(body).then((result)=>
 					{
-						if(xhr.status !== 200)
-						{
-							console.trace("Запрос отменён\n"+xhr.responseText)
-							return
-						}
-						console.trace("Запрос принят\n"+xhr.responseText)
-						actions.login(JSON.parse(xhr.responseText).data)
-					}
-
-					xhr.onerror=()=>
-					{
-						console.trace("Ошибка запроса\n"+xhr.responseText)
-					}
+						actions.login(result)
+					})
 
 				}}>
 				Login

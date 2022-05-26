@@ -10,8 +10,6 @@ import {Store} from './store/Store'
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals()
 
-export const api = "localhost:50050"
-
 
 const dispatcher = new Dispatch()
 const actions_ = actions(dispatcher)
