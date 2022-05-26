@@ -33,14 +33,14 @@ export class Render
 		)
 	}
 
-	start()
+	start(state)
 	{
 		const window_render_entry = this.window_render.filter((entry)=>entry.key===windows.START)
 		let Elem = window_render_entry[0].func
 		this.root.render
 		(
 			<React.StrictMode>
-				<Elem />
+				<Elem state={state} actions = {this.actions} />
 			</React.StrictMode>
 		)
 	}

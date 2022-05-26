@@ -13,10 +13,10 @@ export class Dispatch
 	
 	dispatch(action)
 	{
-		this.store.dispath(action)
+		this.store.dispatch(action)
 	}
 
-	setSlot(store)
+	setStore(store)
 	{
 		this.store=store
 	}

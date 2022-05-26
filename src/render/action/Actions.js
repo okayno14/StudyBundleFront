@@ -5,13 +5,12 @@ export const actionTypes =
 
 export const actions = dispatcher =>
 ({
-	login(username, pass) 
+	login(user) 
 	{
 		let obj = 
 		{
 			type:actionTypes.LOGIN,
-			username,
-			pass
+			currentuser: user
 		}
 		dispatcher.handleAction(obj)
 	}
