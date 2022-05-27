@@ -33,22 +33,7 @@ export class BundleListSearch extends Component
 
 	}
 
-	fillSelectCourse()
-	{
-		let res
-		const {myCourses} = this.props.state
-		if(typeof myCourses !== "undefined")
-		{
-			res = [...myCourses].map((course)=>
-			{
-				return <option id={course.id} key={course.id}>{course.name}</option>
-			})
-		}
-		res = [<option id={-1} key={-1}>-</option>].concat(res)
-		return res
-	}
-
-	fillSelectOther({target})
+	onCourseChange({target})
 	{
 		const order = target.options.selectedIndex
 		var option = target.options[order]
@@ -73,8 +58,50 @@ export class BundleListSearch extends Component
 		({
 			...this.state,
 			btArr,
-			numArr
+			numArr,
+			selected:
+			{
+				courseSel0ected:courseSelected.id
+			}
 		})
+	}
+
+	onBundleTypeChange({target})
+	{
+		const order = target.options.selectedIndex
+		const option = target.options[order]
+		const bundleTypeID = parseInt(option.id)
+
+		if(bundleTypeID === -1)
+		{
+			return
+		}
+
+		let s =
+		{
+			...this.state.selected,
+			bundleTypeSelected:bundleTypeID
+		}
+		
+		this.setState
+		({
+			selected: s
+		})
+	}
+	
+	fillSelectCourse()
+	{
+		let res
+		const {myCourses} = this.props.state
+		if(typeof myCourses !== "undefined")
+		{
+			res = [...myCourses].map((course)=>
+			{
+				return <option id={course.id} key={course.id}>{course.name}</option>
+			})
+		}
+		res = [<option id={-1} key={-1}>-</option>].concat(res)
+		return res
 	}
 
 	fillSelectBT()
@@ -102,6 +129,34 @@ export class BundleListSearch extends Component
 		return res
 	}
 
+	fillSelectNum()
+	{
+		const {selected,btArr, numArr} = this.state
+		
+		let res = [<option id={-1} key={-1}>-</option>]
+		
+		if(numArr === undefined || selected.bundleTypeSelected === undefined)
+		{
+			return res
+		}
+		const {bundleTypeSelected} = selected
+		let order = 0;
+		while(btArr[order].id !== bundleTypeSelected)
+		{
+			order++
+		}
+
+		for(let i=1;i<=numArr[order];i++)
+		{
+			res = [...res,<option id={i} key={i}>{i}</option>]
+		}
+
+		let {_num} = this.refs
+		_num.disabled = false
+
+		return res
+	}
+
 	render()
 	{
 		return <div>
@@ -112,7 +167,7 @@ export class BundleListSearch extends Component
 						<select 
 							name="course" 
 							disabled={typeof this.props.state.myCourses ==="undefined"}
-							onChange={(e)=>{this.fillSelectOther(e)}} >
+							onChange={(e)=>{this.onCourseChange(e)}} >
 								{
 									this.fillSelectCourse()
 								}
@@ -125,7 +180,9 @@ export class BundleListSearch extends Component
 					<tr>
 						<select name="bundleType" 
 						disabled={true}
-						ref="_bundleType">
+						ref="_bundleType"
+						onChange={(e)=>{this.onBundleTypeChange(e)}}
+						>
 							{this.fillSelectBT()}
 						</select>
 					</tr>
@@ -134,8 +191,10 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="num">Номер</label></tr>
 					<tr>
-						<select name="num" disabled={true}>
-							<option id={-1} key={-1}>-</option>
+						<select name="num"
+						disabled={true}
+						ref="_num">
+							{this.fillSelectNum()}
 						</select>
 					</tr>
 				</table>
