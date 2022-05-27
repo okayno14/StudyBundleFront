@@ -36,11 +36,21 @@ export class BundleListSearch extends Component
 	componentDidMount()
 	{
 		const {currentUser} = this.props.state
-		API.getCoursesByOwner(currentUser.id).then((result)=>
-		{
-			const {actions} = this.props
-			actions.getMyCourses(result)
-		})
+		Promise.allSettled([API.getCoursesByOwner(currentUser.id),
+			API.getCourseByGroup(currentUser.group)]).then((res)=>
+			{
+				let data = []
+				res.map((elem)=>
+				{
+					let {status, value} = elem
+					if(status==="fulfilled")
+					{
+						data = [...data,...value]
+					}
+				})
+				const {actions} = this.props
+				actions.getMyCourses(data)
+			})
 	}
 
 	fillSelectCourse()
@@ -49,16 +59,7 @@ export class BundleListSearch extends Component
 		const {myCourses} = this.props.state
 		if(typeof myCourses !== "undefined")
 		{
-			this.setState(
-				{enabled:
-					{
-						course:true,
-						bundleType:false,
-						num:false,
-						group: false,
-						student:false
-					}
-				})
+			
 			res = [...myCourses].map((course)=>
 			{
 				return <option key={course.id}>{course.name}</option>
@@ -75,7 +76,7 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="course">Курсы</label></tr>
 					<tr>
-						<select name="course" disabled={!this.state.enabled.course}>
+						<select name="course" disabled={typeof this.props.state.myCourses ==="undefined"}>
 							{
 								this.fillSelectCourse()
 							}
@@ -117,7 +118,7 @@ export class BundleListSearch extends Component
 				</table>
 				
 				<table className='Select'>
-					<tr><label hrmlFor="student">Студент</label></tr>
+					<tr><label htmlFor="student">Студент</label></tr>
 					<tr>
 						<select name="student" disabled={!this.state.enabled.student}>
 							<option>1</option>
