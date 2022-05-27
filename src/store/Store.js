@@ -62,7 +62,18 @@ export class Store
 			...this.state,
 			..._state
 		}
-
+		// var requirements = []
+		// _state.myCourses.map((course)=>
+		// {
+		// 	course.requirementSet.map((req)=>
+		// 	{
+		// 		let res = requirements.find((item)=>item.id===req.id)
+		// 		if(typeof res === "undefined")
+		// 		{
+		// 			requirements = [...requirements,req]
+		// 		}
+		// 	})
+		// })
 	}
 
 	getState(){return this.state}

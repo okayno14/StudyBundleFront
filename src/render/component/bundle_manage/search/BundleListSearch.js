@@ -35,7 +35,7 @@ export class BundleListSearch extends Component
 
 	componentDidMount()
 	{
-		const {currentUser} = this.props.state
+		const {currentUser,myCourses} = this.props.state
 		Promise.allSettled([API.getCoursesByOwner(currentUser.id),
 			API.getCourseByGroup(currentUser.group)]).then((res)=>
 			{
@@ -51,6 +51,7 @@ export class BundleListSearch extends Component
 				const {actions} = this.props
 				actions.getMyCourses(data)
 			})
+
 	}
 
 	fillSelectCourse()
@@ -59,15 +60,21 @@ export class BundleListSearch extends Component
 		const {myCourses} = this.props.state
 		if(typeof myCourses !== "undefined")
 		{
-			
 			res = [...myCourses].map((course)=>
 			{
-				return <option key={course.id}>{course.name}</option>
+				return <option id={course.id} key={course.id}>{course.name}</option>
 			})
 		}
+		res = [<option id={-1} key={-1}>-</option>].concat(res)
 		return res
 	}
 
+	fillSelectOther({target})
+	{
+		const order = target.options.selectedIndex
+		var option = target.options[order]
+		console.log(option.id)
+	}
 
 	render()
 	{
@@ -76,10 +83,13 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="course">Курсы</label></tr>
 					<tr>
-						<select name="course" disabled={typeof this.props.state.myCourses ==="undefined"}>
-							{
-								this.fillSelectCourse()
-							}
+						<select 
+							name="course" 
+							disabled={typeof this.props.state.myCourses ==="undefined"}
+							onChange={(e)=>{this.fillSelectOther(e)}} >
+								{
+									this.fillSelectCourse()
+								}
 						</select>
 					</tr>
 				</table>
