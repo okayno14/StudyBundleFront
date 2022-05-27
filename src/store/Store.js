@@ -14,8 +14,10 @@ export class Store
 		}
 		this.loginExec = this.loginExec.bind(this)
 		this.moveToBundleExec = this.moveToBundleExec.bind(this)
+		this.getMyCoursesExec = this.getMyCoursesExec.bind(this)
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
+		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
 	}
 	
 	add(key, func)
@@ -50,6 +52,17 @@ export class Store
 			...this.state,
 			currentWindow: windows.BUNDLE_MANAGE
 		}
+	}
+
+	getMyCoursesExec(action)
+	{
+		const{type,..._state} = action
+		this.state=
+		{
+			...this.state,
+			..._state
+		}
+
 	}
 
 	getState(){return this.state}

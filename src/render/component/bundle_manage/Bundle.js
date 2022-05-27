@@ -9,7 +9,7 @@ export const Bundle = (props)=>
 	
 	<table>
 		<tr>
-			<td><BundleListSearch className='Container'/></td>
+			<td><BundleListSearch className='Container' {...props}/></td>
 			<td><div className='Container'>BundleTextSearch_Component</div></td>
 		</tr>
 		<tr>
