@@ -1,5 +1,6 @@
 import { actionTypes } from "../render/action/Actions"
 import { windows } from "../render/Render"
+import {login, logout, me} from "../API"
 
 export class Store
 {
@@ -12,12 +13,37 @@ export class Store
 		{
 			currentWindow: windows.START
 		}
+
+		if(document.cookie !== undefined)
+		{
+			let prom = me()
+			
+			prom.then((result)=>
+			{
+				this.state = {
+					...this.state,
+					currentWindow:windows.CHOICE,
+					currentUser:result
+				}
+				this.render.render(this.state)
+			})
+
+			prom.catch((err)=>
+			{
+				document.cookie = ""
+				this.render.render(this.state)
+			})
+			
+		}
+
 		this.loginExec = this.loginExec.bind(this)
 		this.moveToBundleExec = this.moveToBundleExec.bind(this)
 		this.getMyCoursesExec = this.getMyCoursesExec.bind(this)
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
+
+		
 	}
 	
 	add(key, func)

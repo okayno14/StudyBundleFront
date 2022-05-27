@@ -17,4 +17,4 @@ const render = new Render(actions_)
 const store = new Store(render)
 dispatcher.setStore(store)
 
-render.start(store.getState())
+//render.render(store.getState())

@@ -52,6 +52,16 @@ export const login = (body)=>
 	})	
 }
 
+export const logout = () =>{return 1+1}
+
+export const me = () =>
+{
+	return new Promise((resolve,reject)=>
+	{
+		ajax("GET", URI+"/user/me", resolve,reject)
+	})
+}
+
 export const getCoursesByOwner = (id) =>
 {
 	return new Promise((resolve, reject)=>{
@@ -81,6 +91,6 @@ export const getCourseByGroup = (id) =>
 {
 	return new Promise((resolve,reject)=>
 	{
-		ajax("GET", URI+"course/group"+id, resolve,reject)
+		ajax("GET", URI+"/course/group"+id, resolve,reject)
 	})
 }
