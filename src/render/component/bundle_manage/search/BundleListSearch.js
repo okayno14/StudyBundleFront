@@ -8,28 +8,7 @@ export class BundleListSearch extends Component
 	constructor(props)
 	{
 		super(props)
-
-		this.state = 
-		{
-			enabled:
-			{
-				course:false,
-				bundleType:false,
-				num:false,
-				group: false,
-				student:false
-			},
-
-			hidden:
-			{
-				course:false,
-				bundleType:false,
-				num:false,
-				group: false,
-				student:false
-			}
-		}
-
+		this.state={}
 		this.buildOption= this.fillSelectCourse.bind(this)
 	}
 
@@ -73,7 +52,54 @@ export class BundleListSearch extends Component
 	{
 		const order = target.options.selectedIndex
 		var option = target.options[order]
-		console.log(option.id)
+		let courseID = parseInt(option.id)
+		if(courseID === -1)
+		{
+			return
+		}
+		const {myCourses} = this.props.state
+		let courseSelected = myCourses.find(elem=>elem.id === courseID)
+		let btArr = []
+		let numArr = []
+
+		courseSelected.requirementSet.forEach(element => 
+		{
+			let {bundleType,quantity} = element
+			btArr = [...btArr,bundleType]
+			numArr = [...numArr,quantity]
+		});
+
+		this.setState
+		({
+			...this.state,
+			btArr,
+			numArr
+		})
+	}
+
+	fillSelectBT()
+	{
+		const {btArr} = this.state
+		let res = [<option id={-1} key={-1}>-</option>]
+		
+		if(btArr === undefined)
+		{
+			return res
+		}
+	
+		[...btArr].map((elem)=>
+		{
+			res = 
+			[
+				...res,
+				<option id ={elem.id} key={elem.id}>{elem.name}</option>
+			]	
+		})
+
+		let {_bundleType}=this.refs
+		_bundleType.disabled = false
+
+		return res
 	}
 
 	render()
@@ -97,10 +123,10 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="bundleType">Тип работы</label></tr>
 					<tr>
-						<select name="bundleType" disabled={!this.state.enabled.bundleType}>
-						<option>1</option>
-						<option>2</option>
-						<option>3</option>
+						<select name="bundleType" 
+						disabled={true}
+						ref="_bundleType">
+							{this.fillSelectBT()}
 						</select>
 					</tr>
 				</table>
@@ -108,10 +134,8 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="num">Номер</label></tr>
 					<tr>
-						<select name="num" disabled={!this.state.enabled.num}>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
+						<select name="num" disabled={true}>
+							<option id={-1} key={-1}>-</option>
 						</select>
 					</tr>
 				</table>
@@ -119,10 +143,8 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="group">Группа</label></tr>
 					<tr>
-						<select name="group" disabled={!this.state.enabled.group}>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
+						<select name="group" disabled={true}>
+							<option id={-1} key={-1}>-</option>
 						</select>
 					</tr>
 				</table>
@@ -130,10 +152,8 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="student">Студент</label></tr>
 					<tr>
-						<select name="student" disabled={!this.state.enabled.student}>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
+						<select name="student" disabled={true}>
+							<option id={-1} key={-1}>-</option>
 						</select>
 					</tr>
 				</table>
