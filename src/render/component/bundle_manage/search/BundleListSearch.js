@@ -19,7 +19,8 @@ export class BundleListSearch extends Component
 				courseSelected:undefined,
 				bundleTypeSelected:undefined,
 				numSelected:undefined,
-				groupSelected:undefined
+				groupSelected:undefined,
+				studentSelected:undefined
 			}
 		}
 	}
@@ -215,6 +216,25 @@ export class BundleListSearch extends Component
 			stateDiff.userArr=students;
 			this.setState(stateDiff)
 			actions.fetchGroup({...group,students})
+		})
+	}
+
+	onStudentChanged({target})
+	{
+		const order = target.options.selectedIndex
+		const option = target.options[order]
+		const studentID = parseInt(option.id)
+
+		const {selected} = this.state
+		
+		this.setState
+		({
+			...this.state,
+			selected:
+			{
+				...selected,
+				studentSelected: studentID
+			}
 		})
 	}
 	
