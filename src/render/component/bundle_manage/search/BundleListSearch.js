@@ -8,7 +8,20 @@ export class BundleListSearch extends Component
 	constructor(props)
 	{
 		super(props)
-		this.state={}
+		this.state=
+		{
+			btArr:[],
+			numArr:[],
+			groupArr:[],
+			userArr:[],
+			selected:
+			{
+				courseSelected:undefined,
+				bundleTypeSelected:undefined,
+				numSelected:undefined,
+				groupSelected:undefined
+			}
+		}
 	}
 
 	componentDidMount()
@@ -209,7 +222,7 @@ export class BundleListSearch extends Component
 	{
 		let res=[<option id={-1} key={-1}>-</option>]
 		const {myCourses} = this.props.snapshot
-		if(typeof myCourses !== "undefined")
+		if(myCourses !== undefined)
 		{
 			[...myCourses].map((course)=>
 			{
@@ -228,7 +241,7 @@ export class BundleListSearch extends Component
 		const {btArr} = this.state
 		let res = [<option id={-1} key={-1}>-</option>]
 		
-		if(btArr === undefined)
+		if(btArr === undefined || btArr.length===0)
 		{
 			return res
 		}
@@ -254,7 +267,8 @@ export class BundleListSearch extends Component
 		
 		let res = [<option id={-1} key={-1}>-</option>]
 		
-		if(numArr === undefined || selected.bundleTypeSelected === undefined)
+		if(numArr === undefined || numArr.length ===0 || 
+			selected.bundleTypeSelected === undefined)
 		{
 			return res
 		}
@@ -281,7 +295,7 @@ export class BundleListSearch extends Component
 	{
 		const {groupArr} = this.state
 		let res = [<option id={-1} key={-1}>-</option>]
-		if(groupArr === undefined)
+		if(groupArr === undefined || groupArr.length===0)
 		{
 			return res
 		}
@@ -305,7 +319,7 @@ export class BundleListSearch extends Component
 	{
 		const{userArr} = this.state
 		let res = [<option id={-1} key={-1}>-</option>]
-		if(userArr === undefined)
+		if(userArr === undefined || userArr.length ===0)
 		{
 			return res
 		}
@@ -336,7 +350,7 @@ export class BundleListSearch extends Component
 					<tr>
 						<select 
 							name="course" 
-							disabled={typeof this.props.snapshot.myCourses ==="undefined"}
+							disabled={this.props.snapshot.myCourses === undefined}
 							onChange={(e)=>{this.onCourseChange(e)}} >
 								{
 									this.fillSelectCourse()

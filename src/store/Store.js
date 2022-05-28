@@ -12,6 +12,7 @@ export class Store
 		this.snapshot = 
 		{
 			currentWindow: windows.START,
+			currentUser: undefined,
 			groupsFetched: [],
 			myCourses: []
 		}
@@ -102,7 +103,7 @@ export class Store
 		this.snapshot =
 		{
 			...this.snapshot,
-			groupsFetched: this.concatWithSingleID(groupsFetched,[group])//[...groupsFetched,group]
+			groupsFetched: this.concatWithSingleID(groupsFetched,[group])
 		}
 		console.log("INFO. STORAGE. Action executed: "+type)
 	}
