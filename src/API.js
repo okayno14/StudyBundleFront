@@ -94,3 +94,11 @@ export const getCourseByGroup = (id) =>
 		ajax("GET", URI+"/course/group"+id, resolve,reject)
 	})
 }
+
+export const getGroupStudents = (id) =>
+{
+	return new Promise((resolve,reject)=>
+	{
+		ajax("GET", URI+"/user/group/students/"+id, resolve, reject)
+	})
+}

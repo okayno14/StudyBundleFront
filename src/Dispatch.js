@@ -7,7 +7,7 @@ export class Dispatch
 	
 	handleAction(action)
 	{
-		console.log('dispatching action:', action.type)
+		console.log('DISPATCHER. Dispatching action:', action.type)
 		this.dispatch(action)
 	}
 	

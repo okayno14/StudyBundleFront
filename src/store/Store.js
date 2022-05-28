@@ -39,11 +39,11 @@ export class Store
 		this.loginExec = this.loginExec.bind(this)
 		this.moveToBundleExec = this.moveToBundleExec.bind(this)
 		this.getMyCoursesExec = this.getMyCoursesExec.bind(this)
+		this.fetchGroupExec = this.fetchGroupExec.bind(this)
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
-
-		
+		this.add(actionTypes.FETCH_GROUP, this.fetchGroupExec)
 	}
 	
 	add(key, func)
@@ -88,18 +88,30 @@ export class Store
 			...this.state,
 			..._state
 		}
-		// var requirements = []
-		// _state.myCourses.map((course)=>
-		// {
-		// 	course.requirementSet.map((req)=>
-		// 	{
-		// 		let res = requirements.find((item)=>item.id===req.id)
-		// 		if(typeof res === "undefined")
-		// 		{
-		// 			requirements = [...requirements,req]
-		// 		}
-		// 	})
-		// })
+	}
+
+	fetchGroupExec(action)
+	{
+		const{type,...group} = action
+		const{groupsFetched} = this.state
+		
+		let arr = []
+		if(groupsFetched === undefined)
+		{
+			arr = [...arr,group]
+		}
+		
+		else
+		{
+			arr = [...groupsFetched,group]
+		}
+
+		this.state =
+		{
+			...this.state,
+			groupsFetched:arr
+		}
+		console.log("STORAGE. State updated\n"+JSON.stringify(this.state))
 	}
 
 	getState(){return this.state}

@@ -1,5 +1,3 @@
-import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers'
-import { waitForElementToBeRemoved } from '@testing-library/react'
 import {Component} from 'react'
 import * as API from '../../../../API'
 
@@ -17,6 +15,12 @@ export class BundleListSearch extends Component
 	componentDidMount()
 	{
 		const {currentUser,myCourses} = this.props.state
+
+		if(myCourses !== undefined)
+		{
+			return
+		}
+		
 		Promise.allSettled([API.getCoursesByOwner(currentUser.id),
 			API.getCourseByGroup(currentUser.group)]).then((res)=>
 			{
@@ -42,6 +46,13 @@ export class BundleListSearch extends Component
 		let courseID = parseInt(option.id)
 		if(courseID === -1)
 		{
+			this.setState
+			({
+				selected:
+				{
+					courseSelected:-1
+				}
+			})
 			return
 		}
 		const {myCourses} = this.props.state
@@ -83,6 +94,13 @@ export class BundleListSearch extends Component
 
 		if(bundleTypeID === -1)
 		{
+			this.setState
+			({
+				selected:
+				{
+					bundleTypeSelected:-1
+				}
+			})
 			return
 		}
 
@@ -100,8 +118,20 @@ export class BundleListSearch extends Component
 
 	onNumChage({target})
 	{
-		const q = target.options.selectedIndex+1
+		const q = target.options.selectedIndex
 		
+		if(q === 0)
+		{
+			this.setState
+			({
+				selected:
+				{
+					numSelected:-1
+				}
+			})
+			return
+		}
+
 		let s =
 		{
 			...this.state.selected,
@@ -111,6 +141,90 @@ export class BundleListSearch extends Component
 		this.setState
 		({
 			selected:s
+		})
+	}
+
+	onGroupChange({target})
+	{
+		const order = target.options.selectedIndex
+		const option = target.options[order]
+		const groupID = parseInt(option.id)
+		console.log("INFO. BundleListSearch.onGroupChange. groupID = "+groupID)
+		if(groupID ===-1)
+		{
+			this.setState
+			({
+				selected:
+				{
+					groupSelected:-1
+				}
+			})
+			return
+		}
+
+		const {selected,groupArr} = this.state
+		const courseID = selected.courseSelected
+		const {state,actions} = this.props
+		const {myCourses,currentUser,groupsFetched} = state
+		const course = myCourses.find(elem=>elem.id = courseID)
+		
+		let search = course.courseACL_Set.reduce((contains,cur)=>
+		{
+			const{user} = cur
+			return contains || (user.id === currentUser.id)
+		},false)
+		console.log("INFO. BundleListSearch.onGroupChange. Is currentUser in courseACL = "+search)
+		
+		if(!search)
+		{
+			this.setState({userArr:[currentUser.id]})
+			return	
+		}
+		
+		let userArr = []
+		let snapshotGroup={}
+
+		if(groupsFetched!==undefined)
+		{
+			snapshotGroup = groupsFetched.find(elem=>elem.id===groupID)
+			userArr= snapshotGroup.students
+		}
+		
+		if(userArr !== undefined && userArr.length !== 0)
+		{
+			console.log("INFO. BundleListSearch.onGroupChange. Group contains in Storage")	
+			
+			
+			let stateDiff = 
+			{
+				selected:
+				{
+					groupSelected:groupID,
+					userArr:userArr
+				}
+			}
+			console.log("INFO. BundleListSearch.onGroupChange. StateDiff:\n"+JSON.stringify(stateDiff))
+			this.setState(stateDiff)
+		}
+				
+		console.log("INFO. BundleListSearch.onGroupChange. Group not fetched")
+		let p = API.getGroupStudents(groupID)
+		p.then((students)=>
+		{
+			console.log("INFO. BundleListSearch.onGroupChange. Received students from API:\n"+JSON.stringify(students))
+			let group = groupArr.find(elem=>elem.id===groupID)
+			let stateDiff = 
+			{
+				selected:
+				{
+					groupSelected:groupID,
+					userArr:students
+				}
+			}
+			console.log("INFO. BundleListSearch.onGroupChange. StateDiff:\n"+JSON.stringify(stateDiff))
+			this.setState(stateDiff)
+			
+			actions.fetchGroup({...group,students})
 		})
 	}
 	
@@ -253,7 +367,11 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="group">Группа</label></tr>
 					<tr>
-						<select name="group" disabled={true} ref="_group">
+						<select 
+						name="group" 
+						disabled={true} 
+						ref="_group"
+						onChange={(e)=>{this.onGroupChange(e)}}>
 							{this.fillSelectGroup()}
 						</select>
 					</tr>
