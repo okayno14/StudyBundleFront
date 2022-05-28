@@ -97,7 +97,7 @@ export class Store
 
 	fetchGroupExec(action)
 	{
-		const{type,...group} = action
+		const{type,group} = action
 		const{groupsFetched} = this.snapshot
 		
 		this.snapshot =

@@ -196,7 +196,7 @@ export class BundleListSearch extends Component
 		let snapshotGroup={}
 		if(groupsFetched!==undefined && groupsFetched.length != 0)
 		{
-			snapshotGroup = groupsFetched.find(elem=>elem.id===groupID)
+			snapshotGroup = groupsFetched.find(group=>group.id===groupID)
 			userArr= snapshotGroup.students
 		}
 		if(userArr !== undefined && userArr.length !== 0)
@@ -364,7 +364,6 @@ export class BundleListSearch extends Component
 	render()
 	{
 		return <div>
-				
 				<table className='Select'>
 					<tr><label htmlFor="course">Курсы</label></tr>
 					<tr>
@@ -425,10 +424,13 @@ export class BundleListSearch extends Component
 						disabled={true}
 						ref="_student">
 							{this.fillSelectStudent()}
+						onChange={(e)=>{this.onStudentChanged(e)}}
 						</select>
 					</tr>
 				</table>
-					
+				<button>
+					Найти
+				</button>
 			</div>
 	}
 }
