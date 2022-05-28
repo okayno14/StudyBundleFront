@@ -105,28 +105,23 @@ export class BundleListSearch extends Component
 	onNumChage({target})
 	{
 		const q = target.options.selectedIndex
+		let numID = q
+		
+		const {selected} = this.state
 		
 		if(q === 0)
 		{
-			this.setState
-			({
-				selected:
-				{
-					numSelected:-1
-				}
-			})
-			return
+			numID = -1
 		}
 
-		let s =
-		{
-			...this.state.selected,
-			numSelected: q
-		}
-		
 		this.setState
 		({
-			selected:s
+			...this.state,
+			selected:
+			{
+				...selected,
+				numSelected:numID
+			}
 		})
 	}
 
@@ -136,17 +131,24 @@ export class BundleListSearch extends Component
 		const option = target.options[order]
 		const groupID = parseInt(option.id)
 		console.log("INFO. BundleListSearch.onGroupChange. groupID = "+groupID)
+		
+		
+		let userArr = []
+		
+		let stateDiff = 
+		{
+			...this.state,
+			userArr:userArr,
+			selected:
+			{
+				...this.state.selected,
+				groupSelected:groupID
+			}
+		}
+		
 		if(groupID ===-1)
 		{
-			this.setState
-			({
-				...this.state,
-				selected:
-				{
-					...this.state.selected,
-					groupSelected:-1
-				}
-			})
+			this.setState(stateDiff)
 			return
 		}
 
@@ -165,11 +167,11 @@ export class BundleListSearch extends Component
 		
 		if(!search)
 		{
-			this.setState({userArr:[currentUser.id]})
+			stateDiff.userArr = [currentUser]
+			this.setState(stateDiff)
 			return	
 		}
 		
-		let userArr = []
 		let snapshotGroup={}
 
 		if(groupsFetched!==undefined)
@@ -181,20 +183,10 @@ export class BundleListSearch extends Component
 		if(userArr !== undefined && userArr.length !== 0)
 		{
 			console.log("INFO. BundleListSearch.onGroupChange. Group contains in Storage")	
-			
-			
-			let stateDiff = 
-			{
-				...this.state,
-				userArr:userArr,
-				selected:
-				{
-					...this.state.selected,
-					groupSelected:groupID
-				}
-			}
+			stateDiff.userArr = userArr
 			console.log("INFO. BundleListSearch.onGroupChange. StateDiff:\n"+JSON.stringify(stateDiff))
 			this.setState(stateDiff)
+			return
 		}
 				
 		console.log("INFO. BundleListSearch.onGroupChange. Group not fetched")
@@ -203,16 +195,8 @@ export class BundleListSearch extends Component
 		{
 			console.log("INFO. BundleListSearch.onGroupChange. Received students from API:\n"+JSON.stringify(students))
 			let group = groupArr.find(elem=>elem.id===groupID)
-			let stateDiff = 
-			{
-				...this.state,
-				userArr:students,
-				selected:
-				{
-					...this.state.selected,
-					groupSelected:groupID
-				}
-			}
+			stateDiff.userArr=students;
+			
 			console.log("INFO. BundleListSearch.onGroupChange. StateDiff:\n"+JSON.stringify(stateDiff))
 			this.setState(stateDiff)
 			
