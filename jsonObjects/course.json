@@ -1,0 +1,20 @@
+{
+	"id":71,
+	"name":"Теория формальных языков и компиляторов",
+	"state":"PUBLISHED",
+	"groupes":[{"id":72,
+	"name":"АВТ-709"}],
+	"courseACL_Set":[{"user":{"id":70,
+	"role":{"id":10,
+	"name":"Преподаватель"},
+	"email":"a.malyavko.corp@nstu.ru",
+	"lastName":"Малявко",
+	"firstName":"Александр",
+	"fatherName":"Антонович"},
+	"rights":"AUTHOR"}],
+	"requirementSet":
+	[{"id":278,
+	"quantity":4,
+	"bundleType":{"id":1,
+	"name":"Лабораторная работа"}}]
+}

@@ -1,3 +1,5 @@
+import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers'
+import { waitForElementToBeRemoved } from '@testing-library/react'
 import {Component} from 'react'
 import * as API from '../../../../API'
 
@@ -46,6 +48,7 @@ export class BundleListSearch extends Component
 		let courseSelected = myCourses.find(elem=>elem.id === courseID)
 		let btArr = []
 		let numArr = []
+		let groupArr = []
 
 		courseSelected.requirementSet.forEach(element => 
 		{
@@ -54,14 +57,20 @@ export class BundleListSearch extends Component
 			numArr = [...numArr,quantity]
 		});
 
+		courseSelected.groupes.forEach(element=>
+		{
+			groupArr = [...groupArr,element]
+		})
+
 		this.setState
 		({
 			...this.state,
 			btArr,
 			numArr,
+			groupArr,
 			selected:
 			{
-				courseSel0ected:courseSelected.id
+				courseSelected:courseSelected.id
 			}
 		})
 	}
@@ -86,6 +95,22 @@ export class BundleListSearch extends Component
 		this.setState
 		({
 			selected: s
+		})
+	}
+
+	onNumChage({target})
+	{
+		const q = target.options.selectedIndex+1
+		
+		let s =
+		{
+			...this.state.selected,
+			numSelected: q
+		}
+		
+		this.setState
+		({
+			selected:s
 		})
 	}
 	
@@ -157,6 +182,31 @@ export class BundleListSearch extends Component
 		return res
 	}
 
+	
+	fillSelectGroup()
+	{
+		const {groupArr} = this.state
+		let res = [<option id={-1} key={-1}>-</option>]
+		if(groupArr === undefined)
+		{
+			return res
+		}
+
+		[...groupArr].map((elem)=>
+		{
+			res = 
+			[
+				...res,
+				<option id={elem.id} key={elem.id}>{elem.name}</option>
+			]
+		})
+
+		let{_group}= this.refs
+		_group.disabled=false
+
+		return res
+	}
+
 	render()
 	{
 		return <div>
@@ -193,7 +243,8 @@ export class BundleListSearch extends Component
 					<tr>
 						<select name="num"
 						disabled={true}
-						ref="_num">
+						ref="_num"
+						onChange={(e)=> this.onNumChage(e)}>
 							{this.fillSelectNum()}
 						</select>
 					</tr>
@@ -202,8 +253,8 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="group">Группа</label></tr>
 					<tr>
-						<select name="group" disabled={true}>
-							<option id={-1} key={-1}>-</option>
+						<select name="group" disabled={true} ref="_group">
+							{this.fillSelectGroup()}
 						</select>
 					</tr>
 				</table>
