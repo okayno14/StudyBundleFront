@@ -44,35 +44,31 @@ export class BundleListSearch extends Component
 		const order = target.options.selectedIndex
 		var option = target.options[order]
 		let courseID = parseInt(option.id)
-		if(courseID === -1)
-		{
-			this.setState
-			({
-				selected:
-				{
-					courseSelected:-1
-				}
-			})
-			return
-		}
-		const {myCourses} = this.props.state
-		let courseSelected = myCourses.find(elem=>elem.id === courseID)
+
+		const {selected} = this.state
+
 		let btArr = []
 		let numArr = []
 		let groupArr = []
-
-		courseSelected.requirementSet.forEach(element => 
+		
+		if(courseID !== -1)
 		{
-			let {bundleType,quantity} = element
-			btArr = [...btArr,bundleType]
-			numArr = [...numArr,quantity]
-		});
+			const {myCourses} = this.props.state
+			let courseSelected = myCourses.find(elem=>elem.id === courseID)
+			
+			courseSelected.requirementSet.forEach(element => 
+			{
+				let {bundleType,quantity} = element
+				btArr = [...btArr,bundleType]
+				numArr = [...numArr,quantity]
+			});
 
-		courseSelected.groupes.forEach(element=>
-		{
-			groupArr = [...groupArr,element]
-		})
-
+			courseSelected.groupes.forEach(element=>
+			{
+				groupArr = [...groupArr,element]
+			})
+		}
+		
 		this.setState
 		({
 			...this.state,
@@ -81,7 +77,8 @@ export class BundleListSearch extends Component
 			groupArr,
 			selected:
 			{
-				courseSelected:courseSelected.id
+				...selected,
+				courseSelected:courseID
 			}
 		})
 	}
@@ -92,27 +89,16 @@ export class BundleListSearch extends Component
 		const option = target.options[order]
 		const bundleTypeID = parseInt(option.id)
 
-		if(bundleTypeID === -1)
-		{
-			this.setState
-			({
-				selected:
-				{
-					bundleTypeSelected:-1
-				}
-			})
-			return
-		}
-
-		let s =
-		{
-			...this.state.selected,
-			bundleTypeSelected:bundleTypeID
-		}
+		const {selected} = this.state
 		
 		this.setState
 		({
-			selected: s
+			...this.state,
+			selected:
+			{
+				...selected,
+				bundleTypeSelected:bundleTypeID
+			}
 		})
 	}
 
@@ -236,16 +222,19 @@ export class BundleListSearch extends Component
 	
 	fillSelectCourse()
 	{
-		let res
+		let res=[<option id={-1} key={-1}>-</option>]
 		const {myCourses} = this.props.state
 		if(typeof myCourses !== "undefined")
 		{
-			res = [...myCourses].map((course)=>
+			[...myCourses].map((course)=>
 			{
-				return <option id={course.id} key={course.id}>{course.name}</option>
+				res = 
+				[
+					...res,
+					<option id={course.id} key={course.id}>{course.name}</option>
+				]
 			})
 		}
-		res = [<option id={-1} key={-1}>-</option>].concat(res)
 		return res
 	}
 
