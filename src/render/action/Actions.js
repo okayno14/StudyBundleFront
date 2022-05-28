@@ -44,7 +44,6 @@ export const actions = dispatcher =>
 			type:actionTypes.FETCH_GROUP,
 			group:group
 		}
-		console.log("ACTION. Action created:\n"+JSON.stringify(obj))
 		dispatcher.handleAction(obj)
 	}
 })

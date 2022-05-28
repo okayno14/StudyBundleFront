@@ -111,7 +111,7 @@ export class Store
 			...this.state,
 			groupsFetched:arr
 		}
-		console.log("STORAGE. State updated\n"+JSON.stringify(this.state))
+		console.log("INFO. STORAGE. Action executed: "+type)
 	}
 
 	getState(){return this.state}

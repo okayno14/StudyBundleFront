@@ -130,11 +130,7 @@ export class BundleListSearch extends Component
 		const order = target.options.selectedIndex
 		const option = target.options[order]
 		const groupID = parseInt(option.id)
-		console.log("INFO. BundleListSearch.onGroupChange. groupID = "+groupID)
-		
-		
 		let userArr = []
-		
 		let stateDiff = 
 		{
 			...this.state,
@@ -145,24 +141,24 @@ export class BundleListSearch extends Component
 				groupSelected:groupID
 			}
 		}
-		
-		if(groupID ===-1)
-		{
-			this.setState(stateDiff)
-			return
-		}
-
 		const {selected,groupArr} = this.state
 		const courseID = selected.courseSelected
 		const {state,actions} = this.props
 		const {myCourses,currentUser,groupsFetched} = state
 		const course = myCourses.find(elem=>elem.id = courseID)
 		
+		if(groupID ===-1)
+		{
+			this.setState(stateDiff)
+			return
+		}
+		
 		let search = course.courseACL_Set.reduce((contains,cur)=>
 		{
 			const{user} = cur
 			return contains || (user.id === currentUser.id)
 		},false)
+		
 		console.log("INFO. BundleListSearch.onGroupChange. Is currentUser in courseACL = "+search)
 		
 		if(!search)
@@ -173,18 +169,15 @@ export class BundleListSearch extends Component
 		}
 		
 		let snapshotGroup={}
-
 		if(groupsFetched!==undefined)
 		{
 			snapshotGroup = groupsFetched.find(elem=>elem.id===groupID)
 			userArr= snapshotGroup.students
 		}
-		
 		if(userArr !== undefined && userArr.length !== 0)
 		{
 			console.log("INFO. BundleListSearch.onGroupChange. Group contains in Storage")	
 			stateDiff.userArr = userArr
-			console.log("INFO. BundleListSearch.onGroupChange. StateDiff:\n"+JSON.stringify(stateDiff))
 			this.setState(stateDiff)
 			return
 		}
@@ -193,13 +186,10 @@ export class BundleListSearch extends Component
 		let p = API.getGroupStudents(groupID)
 		p.then((students)=>
 		{
-			console.log("INFO. BundleListSearch.onGroupChange. Received students from API:\n"+JSON.stringify(students))
+			console.log("INFO. BundleListSearch.onGroupChange. Received students from API")
 			let group = groupArr.find(elem=>elem.id===groupID)
 			stateDiff.userArr=students;
-			
-			console.log("INFO. BundleListSearch.onGroupChange. StateDiff:\n"+JSON.stringify(stateDiff))
 			this.setState(stateDiff)
-			
 			actions.fetchGroup({...group,students})
 		})
 	}
