@@ -9,7 +9,7 @@ export class Store
 		this.render = render
 		this.actionType_exec = []
 		
-		this.state = 
+		this.snapshot = 
 		{
 			currentWindow: windows.START
 		}
@@ -20,18 +20,18 @@ export class Store
 			
 			prom.then((result)=>
 			{
-				this.state = {
-					...this.state,
+				this.snapshot = {
+					...this.snapshot,
 					currentWindow:windows.CHOICE,
 					currentUser:result
 				}
-				this.render.render(this.state)
+				this.render.render(this.snapshot)
 			})
 
 			prom.catch((err)=>
 			{
 				document.cookie = ""
-				this.render.render(this.state)
+				this.render.render(this.snapshot)
 			})
 			
 		}
@@ -57,15 +57,15 @@ export class Store
 		let {type} = action
 		var entry = this.actionType_exec.filter((entry)=>entry.key === type)[0]
 		entry.func(action)
-		this.render.render(this.state)
+		this.render.render(this.snapshot)
 	}
 
 	loginExec(action)
 	{
 		const {type,..._state} = action
-		this.state = 
+		this.snapshot = 
 		{
-			...this.state,
+			...this.snapshot,
 			currentWindow: windows.CHOICE,
 			..._state
 		}
@@ -73,9 +73,9 @@ export class Store
 
 	moveToBundleExec(action)
 	{
-		this.state=
+		this.snapshot=
 		{
-			...this.state,
+			...this.snapshot,
 			currentWindow: windows.BUNDLE_MANAGE
 		}
 	}
@@ -83,9 +83,9 @@ export class Store
 	getMyCoursesExec(action)
 	{
 		const{type,..._state} = action
-		this.state=
+		this.snapshot=
 		{
-			...this.state,
+			...this.snapshot,
 			..._state
 		}
 	}
@@ -93,7 +93,7 @@ export class Store
 	fetchGroupExec(action)
 	{
 		const{type,...group} = action
-		const{groupsFetched} = this.state
+		const{groupsFetched} = this.snapshot
 		
 		let arr = []
 		if(groupsFetched === undefined)
@@ -106,13 +106,13 @@ export class Store
 			arr = [...groupsFetched,group]
 		}
 
-		this.state =
+		this.snapshot =
 		{
-			...this.state,
+			...this.snapshot,
 			groupsFetched:arr
 		}
 		console.log("INFO. STORAGE. Action executed: "+type)
 	}
 
-	getState(){return this.state}
+	getState(){return this.snapshot}
 }
