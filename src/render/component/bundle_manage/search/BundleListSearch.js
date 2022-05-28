@@ -154,8 +154,10 @@ export class BundleListSearch extends Component
 		{
 			this.setState
 			({
+				...this.state,
 				selected:
 				{
+					...this.state.selected,
 					groupSelected:-1
 				}
 			})
@@ -197,10 +199,12 @@ export class BundleListSearch extends Component
 			
 			let stateDiff = 
 			{
+				...this.state,
+				userArr:userArr,
 				selected:
 				{
-					groupSelected:groupID,
-					userArr:userArr
+					...this.state.selected,
+					groupSelected:groupID
 				}
 			}
 			console.log("INFO. BundleListSearch.onGroupChange. StateDiff:\n"+JSON.stringify(stateDiff))
@@ -215,10 +219,12 @@ export class BundleListSearch extends Component
 			let group = groupArr.find(elem=>elem.id===groupID)
 			let stateDiff = 
 			{
+				...this.state,
+				userArr:students,
 				selected:
 				{
-					groupSelected:groupID,
-					userArr:students
+					...this.state.selected,
+					groupSelected:groupID
 				}
 			}
 			console.log("INFO. BundleListSearch.onGroupChange. StateDiff:\n"+JSON.stringify(stateDiff))
@@ -321,6 +327,32 @@ export class BundleListSearch extends Component
 		return res
 	}
 
+	fillSelectStudent()
+	{
+		const{userArr} = this.state
+		let res = [<option id={-1} key={-1}>-</option>]
+		if(userArr === undefined)
+		{
+			return res
+		}
+
+		[...userArr].map((elem)=>
+		{
+			res = 
+			[
+				...res,
+				<option id={elem.id} key={elem.id}>
+					{elem.lastName + " "+ elem.firstName.charAt(0)+elem.fatherName.charAt(0)}
+				</option>
+			]
+		})
+
+		let{_student} = this.refs
+		_student.disabled=false
+
+		return res
+	}
+
 	render()
 	{
 		return <div>
@@ -380,8 +412,11 @@ export class BundleListSearch extends Component
 				<table className='Select'>
 					<tr><label htmlFor="student">Студент</label></tr>
 					<tr>
-						<select name="student" disabled={true}>
-							<option id={-1} key={-1}>-</option>
+						<select 
+						name="student" 
+						disabled={true}
+						ref="_student">
+							{this.fillSelectStudent()}
 						</select>
 					</tr>
 				</table>
