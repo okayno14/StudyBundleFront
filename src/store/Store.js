@@ -11,7 +11,9 @@ export class Store
 		
 		this.snapshot = 
 		{
-			currentWindow: windows.START
+			currentWindow: windows.START,
+			groupsFetched: [],
+			myCourses: []
 		}
 
 		if(document.cookie !== undefined)
@@ -82,11 +84,13 @@ export class Store
 
 	getMyCoursesExec(action)
 	{
-		const{type,..._state} = action
+		let b = action.myCourses
+		let a = this.snapshot.myCourses
+
 		this.snapshot=
 		{
 			...this.snapshot,
-			..._state
+			myCourses: this.concatWithSingleID(a,b)
 		}
 	}
 
@@ -95,24 +99,31 @@ export class Store
 		const{type,...group} = action
 		const{groupsFetched} = this.snapshot
 		
-		let arr = []
-		if(groupsFetched === undefined)
-		{
-			arr = [...arr,group]
-		}
-		
-		else
-		{
-			arr = [...groupsFetched,group]
-		}
-
 		this.snapshot =
 		{
 			...this.snapshot,
-			groupsFetched:arr
+			groupsFetched: this.concatWithSingleID(groupsFetched,[group])//[...groupsFetched,group]
 		}
 		console.log("INFO. STORAGE. Action executed: "+type)
 	}
 
 	getState(){return this.snapshot}
+
+	containsID(arr, id)
+	{
+		let res = arr.find(elem=>(elem.id===id))
+		return res!==undefined
+	}
+
+	concatWithSingleID(a,b)
+	{
+		b.map((elem)=>
+		{
+			if(!this.containsID(a,elem.id))
+			{
+				a = [...a,elem]
+			}
+		})
+		return a
+	}
 }

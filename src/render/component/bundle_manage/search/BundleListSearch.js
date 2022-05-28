@@ -9,34 +9,45 @@ export class BundleListSearch extends Component
 	{
 		super(props)
 		this.state={}
-		this.buildOption= this.fillSelectCourse.bind(this)
 	}
 
 	componentDidMount()
 	{
-		const {currentUser,myCourses} = this.props.state
+		console.log("TRACE. BundleListSearch. Component Mounted")
+		
+		const {currentUser,myCourses} = this.props.snapshot
 
-		if(myCourses !== undefined)
+		if(myCourses !== undefined && myCourses.length!=0)
 		{
 			return
 		}
 		
-		Promise.allSettled([API.getCoursesByOwner(currentUser.id),
-			API.getCourseByGroup(currentUser.group)]).then((res)=>
-			{
-				let data = []
-				res.map((elem)=>
+		if(currentUser.group !== undefined)
+		{
+			Promise.allSettled([API.getCoursesByOwner(currentUser.id),
+				API.getCourseByGroup(currentUser.group.id)]).then((res)=>
 				{
-					let {status, value} = elem
-					if(status==="fulfilled")
+					let data = []
+					res.map((elem)=>
 					{
-						data = [...data,...value]
-					}
+						let {status, value} = elem
+						if(status==="fulfilled")
+						{
+							data = [...data,...value]
+						}
+					})
+					const {actions} = this.props
+					actions.getMyCourses(data)
 				})
+		}
+		else
+		{
+			API.getCoursesByOwner(currentUser.id).then((res)=>
+			{
 				const {actions} = this.props
-				actions.getMyCourses(data)
+				actions.getMyCourses(res)
 			})
-
+		}
 	}
 
 	onCourseChange({target})
@@ -53,7 +64,7 @@ export class BundleListSearch extends Component
 		
 		if(courseID !== -1)
 		{
-			const {myCourses} = this.props.state
+			const {myCourses} = this.props.snapshot
 			let courseSelected = myCourses.find(elem=>elem.id === courseID)
 			
 			courseSelected.requirementSet.forEach(element => 
@@ -71,7 +82,7 @@ export class BundleListSearch extends Component
 		
 		this.setState
 		({
-			...this.state,
+			...this.snapshot,
 			btArr,
 			numArr,
 			groupArr,
@@ -143,8 +154,8 @@ export class BundleListSearch extends Component
 		}
 		const {selected,groupArr} = this.state
 		const courseID = selected.courseSelected
-		const {state,actions} = this.props
-		const {myCourses,currentUser,groupsFetched} = state
+		const {snapshot,actions} = this.props
+		const {myCourses,currentUser,groupsFetched} = snapshot
 		const course = myCourses.find(elem=>elem.id = courseID)
 		
 		if(groupID ===-1)
@@ -169,7 +180,7 @@ export class BundleListSearch extends Component
 		}
 		
 		let snapshotGroup={}
-		if(groupsFetched!==undefined)
+		if(groupsFetched!==undefined && groupsFetched.length != 0)
 		{
 			snapshotGroup = groupsFetched.find(elem=>elem.id===groupID)
 			userArr= snapshotGroup.students
@@ -197,7 +208,7 @@ export class BundleListSearch extends Component
 	fillSelectCourse()
 	{
 		let res=[<option id={-1} key={-1}>-</option>]
-		const {myCourses} = this.props.state
+		const {myCourses} = this.props.snapshot
 		if(typeof myCourses !== "undefined")
 		{
 			[...myCourses].map((course)=>
@@ -325,7 +336,7 @@ export class BundleListSearch extends Component
 					<tr>
 						<select 
 							name="course" 
-							disabled={typeof this.props.state.myCourses ==="undefined"}
+							disabled={typeof this.props.snapshot.myCourses ==="undefined"}
 							onChange={(e)=>{this.onCourseChange(e)}} >
 								{
 									this.fillSelectCourse()
