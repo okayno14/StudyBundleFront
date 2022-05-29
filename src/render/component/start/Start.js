@@ -15,7 +15,7 @@ export const Start = (props)=>
 			<label htmlFor="pass"><b>Password</b></label>
 			<input type="password" placeholder="Enter Password" name="pass" required></input>
 			
-			<button type="submit" onClick={()=>
+			<button type="submit" className='ButtonGreen' onClick={()=>
 				{
 					let {actions} = props
 					

@@ -14,6 +14,7 @@ export class Store
 			currentWindow: windows.START,
 			currentUser: undefined,
 			pickedBundle: undefined,
+			bestMatchBundle: undefined,
 			groupsFetched: [],
 			myCourses: [],
 			myBundles: []

@@ -12,7 +12,7 @@ input[type=text], input[type=password]
   box-sizing: border-box;
 }
 
-button 
+.ButtonGreen 
 {
   background-color: #04AA6D;
   color: white;
@@ -23,13 +23,13 @@ button
   width: 100%;
 }
 
-button:hover 
+ButtonGreen:hover 
 {
   opacity: 0.8;
 }
 
-button:disabled,
-button[disabled]
+ButtonGreen:disabled,
+ButtonGreen[disabled]
 {
   opacity: 0.6;
 }

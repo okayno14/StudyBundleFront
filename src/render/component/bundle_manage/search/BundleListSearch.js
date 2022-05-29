@@ -276,7 +276,7 @@ export class BundleListSearch extends Component
 			let fetchedBundle = this.fetchBundleFromArr(bundleArr)
 			console.log("INFO. BundleListSearch. findAction. Bundle fetched id= "+fetchedBundle.id)
 			actions.getBundles(bundleArr)
-			actions.pickBundle(fetchedBundle.id)
+			actions.pickBundle(fetchedBundle)
 		})
 	}
 	
@@ -302,7 +302,7 @@ export class BundleListSearch extends Component
 			return
 		}
 		console.log("INFO. BundleListSearch. findAction. Bundle fetched from cache id= "+fetchedBundle.id)
-		actions.pickBundle(fetchedBundle.id)
+		actions.pickBundle(fetchedBundle)
 	}
 	
 	fillSelectCourse()
@@ -495,6 +495,7 @@ export class BundleListSearch extends Component
 				</table>
 				
 				<button type="button" 
+				className="ButtonGreen"
 				disabled=
 				{
 					this.state.selected.bundleTypeSelected===undefined || 
