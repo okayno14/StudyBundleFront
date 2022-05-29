@@ -3,7 +3,8 @@ export const actionTypes =
 	LOGIN:"LOGIN",
 	MOVE_TO_BUNDLE:"MOVE_TO_BUNDLE",
 	GET_MY_COURSES:"GET_MY_COURSES",
-	FETCH_GROUP:"FETCH_GROUP"
+	FETCH_GROUP:"FETCH_GROUP",
+	GET_BUNDLES:"GET_BUNDLES"
 }
 
 export const actions = dispatcher =>
@@ -43,6 +44,16 @@ export const actions = dispatcher =>
 		{
 			type:actionTypes.FETCH_GROUP,
 			group:group
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	getBundles(bundlesArr)
+	{
+		const obj = 
+		{
+			type:actionTypes.GET_BUNDLES,
+			data:bundlesArr
 		}
 		dispatcher.handleAction(obj)
 	}

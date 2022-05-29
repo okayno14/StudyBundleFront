@@ -31,7 +31,7 @@ export class BundleListSearch extends Component
 		
 		const {currentUser,myCourses} = this.props.snapshot
 
-		if(myCourses !== undefined && myCourses.length!=0)
+		if(myCourses !== undefined && myCourses.length!==0)
 		{
 			return
 		}
@@ -194,7 +194,7 @@ export class BundleListSearch extends Component
 		}
 		
 		let snapshotGroup={}
-		if(groupsFetched!==undefined && groupsFetched.length != 0)
+		if(groupsFetched!==undefined && groupsFetched.length !== 0)
 		{
 			snapshotGroup = groupsFetched.find(group=>group.id===groupID)
 			userArr= snapshotGroup.students
@@ -235,6 +235,24 @@ export class BundleListSearch extends Component
 				...selected,
 				studentSelected: studentID
 			}
+		})
+	}
+
+	findAction(e)
+	{
+		const{selected} = this.state
+		const{actions} = this.props
+		console.log("INFO. BundleListSearch. findAction. User picked:\n"+JSON.stringify(selected))
+		API.getBundles(selected.courseSelected,selected.studentSelected).then
+		(bundleArr=>
+		{
+			console.log("INFO. BundleListSearch. findAction. Received from API "+ bundleArr.length+" elements")
+			console.log("TRACE. BundleListSearch. findAction. Extracted values:")
+			bundleArr.forEach((bundle)=>
+			{
+				console.log(JSON.stringify(bundle))
+			})
+			actions.getBundles(bundleArr)
 		})
 	}
 	
@@ -422,13 +440,13 @@ export class BundleListSearch extends Component
 						<select 
 						name="student" 
 						disabled={true}
-						ref="_student">
+						ref="_student"
+						onChange={(e)=>{this.onStudentChanged(e)}}>
 							{this.fillSelectStudent()}
-						onChange={(e)=>{this.onStudentChanged(e)}}
 						</select>
 					</tr>
 				</table>
-				<button>
+				<button onClick={(e)=>{this.findAction(e)}}>
 					Найти
 				</button>
 			</div>

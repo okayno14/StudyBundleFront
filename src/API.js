@@ -102,3 +102,13 @@ export const getGroupStudents = (id) =>
 		ajax("GET", URI+"/user/group/students/"+id, resolve, reject)
 	})
 }
+
+export const getBundles = (courseID, userID) =>
+{
+	let req =URI+"/bundle/"+courseID+"/"+userID
+	console.log("INFO. API. getBundles. Request:"+req)
+	return new Promise((resolve,reject)=>
+	{
+		ajax("GET", req, resolve, reject)
+	})
+}
