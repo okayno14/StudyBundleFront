@@ -2,6 +2,8 @@ import {Component} from 'react'
 import * as API from '../../../../API'
 import {Course} from '../../../../store/Course'
 import { Bundle } from '../../../../store/Bundle'
+import * as JSZip from 'jszip/dist/jszip';
+import { saveAs } from 'file-saver'
 import './index.css'
 
 const Circle = (props)=>
@@ -15,7 +17,7 @@ const Circle = (props)=>
 
 const StatusText = (props)=>
 {
-	var text
+	var text=""
 	const{bundle}=props
 	if(bundle===undefined)
 	{
@@ -23,20 +25,30 @@ const StatusText = (props)=>
 	}
 	else
 	{
-		text = bundle.folder
-		text = text.replaceAll("/"," ")
-		
-		switch (bundle.state)
+		if(bundle.id !== -1)
 		{
-			case "ACCEPTED": 
-				text = text + " ✔️"
-				break
-			case "EMPTY":
-				text = text + " 📝"
-				break
-			case "CANCELED":
-				text = text + " ⛔"
-				break
+			text = bundle.folder
+			text = text.replaceAll("/"," ")
+		}
+		if(bundle.percent !== undefined)
+		{
+			text = text + " Сходство = "+bundle.percent+"%"
+		}
+		
+		if(bundle.id !== -1)
+		{
+			switch (bundle.state)
+			{
+				case "ACCEPTED": 
+					text = text + " ✔️"
+					break
+				case "EMPTY":
+					text = text + " 📝"
+					break
+				case "CANCELED":
+					text = text + " ⛔"
+					break
+			}
 		}
 	}
 	return <span>
@@ -133,6 +145,52 @@ export class BundleStatus extends Component
 		return f
 	}
 
+	uploadHandler({target})
+	{
+		const {files} = target
+		const {pickedBundle} = this.props.snapshot
+		let zipFile = new JSZip().folder("src")
+		
+		console.log("INFO.BundleStatus.uploadHandler. User picked bundle.id = "+pickedBundle.id)
+
+		for(let i=0;i<files.length;i++)
+		{
+			let file =files[i]
+			let path = "src/"
+			let format = file.name.match(".[a-z]+$")[0]
+			if(format === ".doc" || format === ".docx")
+			{
+				path=""
+			}
+
+			zipFile.file(path+files[i].name,files[i]) 
+		}
+		
+		this.setState({loading:true})
+		
+		zipFile.generateAsync({type:"blob"}).then(
+		blob=>
+		{
+			console.log("INFO.BundleStatus.uploadHandler. Bundle packed. Sending it to API.")
+			let p = API.sendBundle(blob,pickedBundle.id)
+			p.then((result)=>
+			{
+				console.log("INFO.BundleStatus.uploadHandler.Received answer from API")
+				this.setState({loading:false})
+				this.props.actions.sendBundle(result)
+			})
+			p.catch((err)=>
+			{
+				this.setState({loading:false})
+			})
+		},
+		(err)=>
+		{
+
+		})
+
+	}
+
 	render()
 	{
 		return (
@@ -147,9 +205,14 @@ export class BundleStatus extends Component
 					</span>
 					
 					<span>
-						<button className="ButtonWithPic" disabled={!this.isUploadEnabled()}>
-							<img src='upload.png'></img>
-						</button>
+						<input
+						className="ButtonWithPic" 
+						type="file" 
+						name="file"
+						multiple={true}
+						disabled={!this.isUploadEnabled()}
+						onChange = {(e)=>{this.uploadHandler(e)}}>
+						</input>
 					</span>
 					<span>
 						<button className="ButtonWithPic" disabled={!this.isDownloadEnabled()}>

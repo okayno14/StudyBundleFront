@@ -112,3 +112,33 @@ export const getBundles = (courseID, userID) =>
 		ajax("GET", req, resolve, reject)
 	})
 }
+
+export const sendBundle = (zip, id) =>
+{
+	return new Promise((resolve,reject)=>
+	{
+		let formData = new FormData()
+		formData.append("uploaded_bundle",zip)
+
+		const xhr = new XMLHttpRequest()
+		xhr.open("POST", URI+"/bundle/upload/"+id)
+
+		xhr.withCredentials = true;
+		xhr.send(formData)
+
+		xhr.onload=()=>
+		{
+			let resp = xhr.responseText
+			if(xhr.status !== 200)
+			{
+				reject(Error(resp))
+				return
+			}
+			resolve(JSON.parse(resp).data)
+			console.trace(document.cookie)
+		}
+
+		xhr.onerror=(err)=>reject(Error(err))
+	})
+
+}

@@ -48,12 +48,14 @@ export class Store
 		this.fetchGroupExec = this.fetchGroupExec.bind(this)
 		this.getBundlesExec = this.getBundlesExec.bind(this)
 		this.pickedBundleExec = this.pickedBundleExec.bind(this)
+		this.sendBundleExec = this.sendBundleExec.bind(this)
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
 		this.add(actionTypes.FETCH_GROUP, this.fetchGroupExec)
 		this.add(actionTypes.GET_BUNDLES, this.getBundlesExec)
 		this.add(actionTypes.PICK_BUNDLE, this.pickedBundleExec)
+		this.add(actionTypes.SEND_BUNDLE,this.sendBundleExec)
 	}
 	
 	add(key, func)
@@ -133,6 +135,26 @@ export class Store
 		{
 			...this.snapshot,
 			pickedBundle:data
+		}
+	}
+
+	sendBundleExec(action)
+	{
+		const {data} = action
+		const {arr,percent} = data
+		const pickedBundle = arr[0]
+		let bestMatchBundle = arr[1]
+		bestMatchBundle = 
+		{
+			...bestMatchBundle,
+			percent:percent
+		}
+
+		this.snapshot = 
+		{
+			...this.snapshot,
+			pickedBundle:pickedBundle,
+			bestMatchBundle:bestMatchBundle
 		}
 	}
 
