@@ -1,4 +1,6 @@
 import {Component} from 'react'
+import {Course} from '../../../../store/Course'
+import { Bundle } from '../../../../store/Bundle'
 import * as API from '../../../../API'
 
 import './index.css'
@@ -178,12 +180,8 @@ export class BundleListSearch extends Component
 			this.setState(stateDiff)
 			return
 		}
-		
-		let search = course.courseACL_Set.reduce((contains,cur)=>
-		{
-			const{user} = cur
-			return contains || (user.id === currentUser.id)
-		},false)
+	
+		let search = Course.existsACE(course,currentUser)
 		
 		console.log("INFO. BundleListSearch.onGroupChange. Is currentUser in courseACL = "+search)
 		
@@ -244,12 +242,7 @@ export class BundleListSearch extends Component
 		const{selected} = this.state
 		let fetchedBundle = myBundles.find(bundle=>
 		{
-			let acl = bundle.bundleACLSet
-			let containsInACL = acl.find(ace=>
-			{
-				let {user} = ace
-				return user.id === selected.studentSelected
-			})
+			let containsInACL = Bundle.existsACE(bundle,selected.studentSelected)
 			
 			return containsInACL !== undefined &&
 					bundle.bundleType.id===selected.bundleTypeSelected &&

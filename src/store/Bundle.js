@@ -10,4 +10,3 @@ export const Bundle  =
 		return res !==undefined
 	}
 }
-
