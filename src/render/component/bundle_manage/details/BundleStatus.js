@@ -1,5 +1,7 @@
 import {Component} from 'react'
 import * as API from '../../../../API'
+import {Course} from '../../../../store/Course'
+import { Bundle } from '../../../../store/Bundle'
 import './index.css'
 
 const Circle = (props)=>
@@ -63,8 +65,72 @@ export class BundleStatus extends Component
 
 		this.state = 
 		{	
-			loading:false
+			loading:false,
+			test:1
 		}
+	}
+
+	isUploadEnabled()
+	{
+		const{pickedBundle, currentUser, myCourses} = this.props.snapshot
+		
+		if(pickedBundle===undefined)
+		{
+			return false
+		}
+		
+		let f = Bundle.existsACE(pickedBundle,currentUser)
+		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
+		f = f || Course.existsACE(course,currentUser) 
+		f = f && pickedBundle.state !== "ACCEPTED" 
+				
+		return f
+	}
+
+	isDownloadEnabled()
+	{
+		const{pickedBundle, currentUser, myCourses} = this.props.snapshot
+
+		if(pickedBundle===undefined)
+		{
+			return false
+		}
+
+		let f = Bundle.existsACE(pickedBundle,currentUser)
+		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
+		f = f || Course.existsACE(course,currentUser) 
+		f = f && pickedBundle.state !== "EMPTY"
+		return f
+	}
+
+	isCancelEnabled()
+	{
+		const{pickedBundle, currentUser, myCourses} = this.props.snapshot
+
+		if(pickedBundle===undefined)
+		{
+			return false
+		}
+
+		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
+		let f = Course.existsACE(course,currentUser) 
+		f = f && pickedBundle.state == "ACCEPTED"
+		return f
+	}
+
+	isAcceptEnabled()
+	{
+		const{pickedBundle, currentUser, myCourses} = this.props.snapshot
+
+		if(pickedBundle===undefined)
+		{
+			return false
+		}
+
+		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
+		let f = Course.existsACE(course,currentUser) 
+		f = f && pickedBundle.state == "CANCELED"
+		return f
 	}
 
 	render()
@@ -81,27 +147,27 @@ export class BundleStatus extends Component
 					</span>
 					
 					<span>
-						<button className="ButtonWithPic">
+						<button className="ButtonWithPic" disabled={!this.isUploadEnabled()}>
 							<img src='upload.png'></img>
 						</button>
 					</span>
 					<span>
-						<button className="ButtonWithPic">
+						<button className="ButtonWithPic" disabled={!this.isDownloadEnabled()}>
 							<img src='download.png'></img>
 						</button>
 					</span>
 					<span>
-						<button className="ButtonWithPic">
+						<button className="ButtonWithPic" disabled={!this.isCancelEnabled()}>
 							<img src='cancel.png'></img>
 						</button>
 					</span>
 					<span>
-						<button className="ButtonWithPic">
+						<button className="ButtonWithPic" disabled={!this.isAcceptEnabled()}>
 							<img src='check-mark.png'></img>
 						</button>
 					</span>
 					<span>
-						<Circle {...this.state.loading}/>
+						<Circle {...this.state}/>
 					</span>
 					
 				</div>
