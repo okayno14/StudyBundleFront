@@ -1,7 +1,6 @@
 import {React} from 'react'
 import {BundleListSearch} from './search/BundleListSearch'
 import {BundleTextSearch} from './search/BundleTextSearch'
-import './index.css'
 
 export const Bundle = (props)=>
 <div>

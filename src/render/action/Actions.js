@@ -4,7 +4,8 @@ export const actionTypes =
 	MOVE_TO_BUNDLE:"MOVE_TO_BUNDLE",
 	GET_MY_COURSES:"GET_MY_COURSES",
 	FETCH_GROUP:"FETCH_GROUP",
-	GET_BUNDLES:"GET_BUNDLES"
+	GET_BUNDLES:"GET_BUNDLES",
+	PICK_BUNDLE:"PICK_BUNDLE"
 }
 
 export const actions = dispatcher =>
@@ -54,6 +55,16 @@ export const actions = dispatcher =>
 		{
 			type:actionTypes.GET_BUNDLES,
 			data:bundlesArr
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	pickBundle(bundleID)
+	{
+		const obj = 
+		{
+			type:actionTypes.PICK_BUNDLE,
+			data:bundleID
 		}
 		dispatcher.handleAction(obj)
 	}

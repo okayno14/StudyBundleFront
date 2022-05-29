@@ -13,6 +13,7 @@ export class Store
 		{
 			currentWindow: windows.START,
 			currentUser: undefined,
+			pickedBundle: undefined,
 			groupsFetched: [],
 			myCourses: [],
 			myBundles: []
@@ -45,11 +46,13 @@ export class Store
 		this.getMyCoursesExec = this.getMyCoursesExec.bind(this)
 		this.fetchGroupExec = this.fetchGroupExec.bind(this)
 		this.getBundlesExec = this.getBundlesExec.bind(this)
+		this.pickedBundleExec = this.pickedBundleExec.bind(this)
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
 		this.add(actionTypes.FETCH_GROUP, this.fetchGroupExec)
 		this.add(actionTypes.GET_BUNDLES, this.getBundlesExec)
+		this.add(actionTypes.PICK_BUNDLE, this.pickedBundleExec)
 	}
 	
 	add(key, func)
@@ -118,6 +121,17 @@ export class Store
 		{
 			...this.snapshot,
 			groupsFetched: this.concatWithSingleID(groupsFetched,[group])
+		}
+	}
+
+	pickedBundleExec(action)
+	{
+		const{data} = action
+		
+		this.snapshot = 
+		{
+			...this.snapshot,
+			pickedBundle:data
 		}
 	}
 

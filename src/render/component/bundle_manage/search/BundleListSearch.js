@@ -14,6 +14,7 @@ export class BundleListSearch extends Component
 			numArr:[],
 			groupArr:[],
 			userArr:[],
+			findButtonEnabled:false,
 			selected:
 			{
 				courseSelected:undefined,
@@ -238,11 +239,30 @@ export class BundleListSearch extends Component
 		})
 	}
 
-	findAction(e)
+	fetchBundleFromArr(myBundles)
 	{
 		const{selected} = this.state
-		const{actions} = this.props
-		console.log("INFO. BundleListSearch. findAction. User picked:\n"+JSON.stringify(selected))
+		let fetchedBundle = myBundles.find(bundle=>
+		{
+			let acl = bundle.bundleACLSet
+			let containsInACL = acl.find(ace=>
+			{
+				let {user} = ace
+				return user.id === selected.studentSelected
+			})
+			
+			return containsInACL !== undefined &&
+					bundle.bundleType.id===selected.bundleTypeSelected &&
+					bundle.num === selected.numSelected &&
+					bundle.courseID === selected.courseSelected 
+		})
+		return fetchedBundle
+	}
+
+	getBundlesFromAPI()
+	{
+		const{selected} = this.state
+		const{actions,snapshot} = this.props
 		API.getBundles(selected.courseSelected,selected.studentSelected).then
 		(bundleArr=>
 		{
@@ -252,8 +272,37 @@ export class BundleListSearch extends Component
 			{
 				console.log(JSON.stringify(bundle))
 			})
+			
+			let fetchedBundle = this.fetchBundleFromArr(bundleArr)
+			console.log("INFO. BundleListSearch. findAction. Bundle fetched id= "+fetchedBundle.id)
 			actions.getBundles(bundleArr)
+			actions.pickBundle(fetchedBundle.id)
 		})
+	}
+	
+	
+	findAction(e)
+	{
+		const{selected} = this.state
+		const{actions,snapshot} = this.props
+		const{myBundles} = snapshot
+
+		console.log("INFO. BundleListSearch. findAction. User picked:\n"+JSON.stringify(selected))
+		
+		if(myBundles.length===0)
+		{
+			this.getBundlesFromAPI()
+			return
+		} 
+		
+		let fetchedBundle = this.fetchBundleFromArr(myBundles)
+		if(fetchedBundle===undefined)
+		{
+			this.getBundlesFromAPI()
+			return
+		}
+		console.log("INFO. BundleListSearch. findAction. Bundle fetched from cache id= "+fetchedBundle.id)
+		actions.pickBundle(fetchedBundle.id)
 	}
 	
 	fillSelectCourse()
@@ -378,7 +427,6 @@ export class BundleListSearch extends Component
 
 		return res
 	}
-
 	render()
 	{
 		return <div>
@@ -402,8 +450,7 @@ export class BundleListSearch extends Component
 						<select name="bundleType" 
 						disabled={true}
 						ref="_bundleType"
-						onChange={(e)=>{this.onBundleTypeChange(e)}}
-						>
+						onChange={(e)=>{this.onBundleTypeChange(e)}}>
 							{this.fillSelectBT()}
 						</select>
 					</tr>
@@ -446,7 +493,17 @@ export class BundleListSearch extends Component
 						</select>
 					</tr>
 				</table>
-				<button onClick={(e)=>{this.findAction(e)}}>
+				
+				<button type="button" 
+				disabled=
+				{
+					this.state.selected.bundleTypeSelected===undefined || 
+					this.state.selected.courseSelected===undefined ||
+					this.state.selected.groupSelected===undefined ||
+					this.state.selected.numSelected===undefined ||
+					this.state.selected.studentSelected===undefined
+				} 
+				onClick={(e)=>{this.findAction(e)}}>
 					Найти
 				</button>
 			</div>
