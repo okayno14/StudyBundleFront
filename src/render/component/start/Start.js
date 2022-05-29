@@ -24,7 +24,7 @@ export const Start = (props)=>
 						email: document.getElementsByName("email")[0].value,
 						pass: document.getElementsByName("pass")[0].value
 					}
-					
+
 					API.login(body).then((result)=>
 					{
 						actions.login(result)

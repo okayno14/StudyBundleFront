@@ -25,27 +25,20 @@ export class Render
 		this.add(windows.BUNDLE_MANAGE, Bundle)
 	}
 
-	render(state)
+	render(snapshot)
 	{
-		const {currentWindow} = state
+		const {currentWindow} = snapshot
 		const window_render_entry = this.window_render.filter((entry)=>entry.key===currentWindow)
 		let Elem = window_render_entry[0].func
+		let p = 
+		{
+			snapshot:snapshot,
+			actions:this.actions
+		}
 		this.root.render
 		(
 			<React.StrictMode>
-				<Elem state={state} actions = {this.actions}/>
-			</React.StrictMode>
-		)
-	}
-
-	start(state)
-	{
-		const window_render_entry = this.window_render.filter((entry)=>entry.key===windows.START)
-		let Elem = window_render_entry[0].func
-		this.root.render
-		(
-			<React.StrictMode>
-				<Elem state={state} actions = {this.actions} />
+				<Elem {...p}/>
 			</React.StrictMode>
 		)
 	}

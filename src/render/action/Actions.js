@@ -1,7 +1,11 @@
 export const actionTypes = 
 {
 	LOGIN:"LOGIN",
-	MOVE_TO_BUNDLE:"MOVE_TO_BUNDLE"
+	MOVE_TO_BUNDLE:"MOVE_TO_BUNDLE",
+	GET_MY_COURSES:"GET_MY_COURSES",
+	FETCH_GROUP:"FETCH_GROUP",
+	GET_BUNDLES:"GET_BUNDLES",
+	PICK_BUNDLE:"PICK_BUNDLE"
 }
 
 export const actions = dispatcher =>
@@ -11,7 +15,7 @@ export const actions = dispatcher =>
 		let obj = 
 		{
 			type:actionTypes.LOGIN,
-			currentuser: user
+			currentUser: user
 		}
 		dispatcher.handleAction(obj)
 	},
@@ -21,6 +25,46 @@ export const actions = dispatcher =>
 		let obj = 
 		{
 			type:actionTypes.MOVE_TO_BUNDLE
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	getMyCourses(arr)
+	{
+		const obj = 
+		{
+			type:actionTypes.GET_MY_COURSES,
+			myCourses:arr
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	fetchGroup(group)
+	{
+		const obj = 
+		{
+			type:actionTypes.FETCH_GROUP,
+			group:group
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	getBundles(bundlesArr)
+	{
+		const obj = 
+		{
+			type:actionTypes.GET_BUNDLES,
+			data:bundlesArr
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	pickBundle(bundleID)
+	{
+		const obj = 
+		{
+			type:actionTypes.PICK_BUNDLE,
+			data:bundleID
 		}
 		dispatcher.handleAction(obj)
 	}
