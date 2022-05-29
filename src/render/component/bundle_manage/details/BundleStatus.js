@@ -4,8 +4,7 @@ import './index.css'
 
 const Circle = (props)=>
 {
-	let flag = true
-	if(flag)
+	if(props.loading)
 	{
 		return <span className='Loader' hidden={false}/>
 	}
@@ -41,17 +40,6 @@ const StatusText = (props)=>
 
 export class BundleStatus extends Component
 {
-	static getDerivedStateFromProps(props, state)
-	{
-		const{pickedBundle,bestMatchBundle} = props.snapshot
-		return{
-			...state,
-			pickedBundle:pickedBundle,
-			bestMatchBundle:bestMatchBundle
-		}
-	}
-	
-	
 	constructor(props)
 	{
 		super(props)
@@ -60,8 +48,7 @@ export class BundleStatus extends Component
 
 		this.state = 
 		{	
-			pickedBundle:undefined,
-			bestMatchBundle:undefined
+			loading:false
 		}
 	}
 
@@ -73,7 +60,7 @@ export class BundleStatus extends Component
 					
 					<span>
 						<StatusText 
-						pickedBundle = {this.state.pickedBundle} 
+						pickedBundle = {this.props.snapshot.pickedBundle} 
 						name={"Информация"} 
 						defaultText="здесь может быть ваш бандл"/>
 					</span>
@@ -99,7 +86,7 @@ export class BundleStatus extends Component
 						</button>
 					</span>
 					<span>
-						<Circle {...this.props}/>
+						<Circle {...this.state.loading}/>
 					</span>
 					
 				</div>
@@ -107,7 +94,7 @@ export class BundleStatus extends Component
 				<div>
 					<span>
 						<StatusText 
-						pickedBundle = {this.state.bestMatchBundle} 
+						pickedBundle = {this.props.snapshot.bestMatchBundle} 
 						name={"Результат операции"}
 						defaultText="здесь может быть результат вызванной вами операции"/>
 					</span>
