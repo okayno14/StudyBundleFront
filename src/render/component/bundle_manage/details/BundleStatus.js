@@ -14,14 +14,28 @@ const Circle = (props)=>
 const StatusText = (props)=>
 {
 	var text
-	if(props.pickedBundle===undefined)
+	const{bundle}=props
+	if(bundle===undefined)
 	{
 		text=props.defaultText
 	}
 	else
 	{
-		text = props.pickedBundle.folder
+		text = bundle.folder
 		text = text.replaceAll("/"," ")
+		
+		switch (bundle.state)
+		{
+			case "ACCEPTED": 
+				text = text + " ✔️"
+				break
+			case "EMPTY":
+				text = text + " 📝"
+				break
+			case "CANCELED":
+				text = text + " ⛔"
+				break
+		}
 	}
 	return <span>
 		<div>
@@ -31,7 +45,8 @@ const StatusText = (props)=>
 		className='Status' 
 		readOnly={true}
 		cols={text.length}
-		value = {text}>
+		value = {text}
+		background-color="grey">
 		</textarea>
 	</span>
 	
@@ -60,7 +75,7 @@ export class BundleStatus extends Component
 					
 					<span>
 						<StatusText 
-						pickedBundle = {this.props.snapshot.pickedBundle} 
+						bundle = {this.props.snapshot.pickedBundle} 
 						name={"Информация"} 
 						defaultText="здесь может быть ваш бандл"/>
 					</span>
@@ -94,7 +109,7 @@ export class BundleStatus extends Component
 				<div>
 					<span>
 						<StatusText 
-						pickedBundle = {this.props.snapshot.bestMatchBundle} 
+						bundle = {this.props.snapshot.bestMatchBundle} 
 						name={"Результат операции"}
 						defaultText="здесь может быть результат вызванной вами операции"/>
 					</span>
