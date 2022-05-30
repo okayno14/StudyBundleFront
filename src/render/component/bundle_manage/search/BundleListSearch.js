@@ -244,7 +244,7 @@ export class BundleListSearch extends Component
 		{
 			let containsInACL = Bundle.existsACE(bundle,selected.studentSelected)
 			
-			return containsInACL !== undefined &&
+			return containsInACL !== false &&
 					bundle.bundleType.id===selected.bundleTypeSelected &&
 					bundle.num === selected.numSelected &&
 					bundle.courseID === selected.courseSelected 

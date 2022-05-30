@@ -91,7 +91,7 @@ export class BundleStatus extends Component
 			return false
 		}
 		
-		let f = Bundle.existsACE(pickedBundle,currentUser)
+		let f = Bundle.existsACE(pickedBundle,currentUser.id)
 		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
 		f = f || Course.existsACE(course,currentUser) 
 		f = f && pickedBundle.state !== "ACCEPTED" 
@@ -108,7 +108,7 @@ export class BundleStatus extends Component
 			return false
 		}
 
-		let f = Bundle.existsACE(pickedBundle,currentUser)
+		let f = Bundle.existsACE(pickedBundle,currentUser.id)
 		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
 		f = f || Course.existsACE(course,currentUser) 
 		f = f && pickedBundle.state !== "EMPTY"
