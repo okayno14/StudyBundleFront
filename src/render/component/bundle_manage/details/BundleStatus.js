@@ -1,4 +1,4 @@
-import {Component} from 'react'
+import {Component, createRef} from 'react'
 import * as API from '../../../../API'
 import {Course} from '../../../../store/Course'
 import { Bundle } from '../../../../store/Bundle'
@@ -80,6 +80,8 @@ export class BundleStatus extends Component
 			loading:false,
 			test:1
 		}
+
+		this.uploadRef = createRef()
 	}
 
 	isUploadEnabled()
@@ -178,17 +180,24 @@ export class BundleStatus extends Component
 				console.log("INFO.BundleStatus.uploadHandler.Received answer from API")
 				this.setState({loading:false})
 				this.props.actions.sendBundle(result)
+				this.resetUpload()
 			})
 			p.catch((err)=>
 			{
 				this.setState({loading:false})
+				this.resetUpload()
 			})
 		},
 		(err)=>
 		{
-
+			this.resetUpload()
 		})
 
+	}
+
+	resetUpload()
+	{
+		this.uploadRef.current.value=""
 	}
 
 	downloadHandler()
@@ -221,7 +230,8 @@ export class BundleStatus extends Component
 						name="file"
 						multiple={true}
 						disabled={!this.isUploadEnabled()}
-						onChange = {(e)=>{this.uploadHandler(e)}}>
+						onChange = {(e)=>{this.uploadHandler(e)}}
+						ref={this.uploadRef}>
 						</input>
 					</span>
 					<span>

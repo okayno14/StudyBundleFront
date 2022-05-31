@@ -142,19 +142,30 @@ export class Store
 	{
 		const {data} = action
 		const {arr,percent} = data
-		const pickedBundle = arr[0]
-		let bestMatchBundle = arr[1]
-		bestMatchBundle = 
+		let {myBundles} = this.snapshot
+		const b1 = arr[0]
+		let b2 = arr[1]
+		b2 = 
 		{
-			...bestMatchBundle,
+			...b2,
 			percent:percent
 		}
+		
+		let bundlesFiltered = myBundles.map(elem=>
+		{
+			if(elem.id===b1.id)
+			{
+				return b1
+			}
+			return elem
+		})
 
 		this.snapshot = 
 		{
 			...this.snapshot,
-			pickedBundle:pickedBundle,
-			bestMatchBundle:bestMatchBundle
+			pickedBundle:b1,
+			bestMatchBundle:b2,
+			myBundles:bundlesFiltered
 		}
 	}
 
