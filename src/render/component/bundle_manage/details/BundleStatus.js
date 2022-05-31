@@ -3,7 +3,7 @@ import * as API from '../../../../API'
 import {Course} from '../../../../store/Course'
 import { Bundle } from '../../../../store/Bundle'
 import * as JSZip from 'jszip/dist/jszip';
-import { saveAs } from 'file-saver'
+
 import './index.css'
 
 const Circle = (props)=>
@@ -191,6 +191,16 @@ export class BundleStatus extends Component
 
 	}
 
+	downloadHandler()
+	{
+		const {pickedBundle} = this.props.snapshot
+		console.log("TRACE. BundleStratus. downloadHandler. User requested bundle.id="+pickedBundle.id)
+		if(pickedBundle!==undefined)
+		{
+			API.downloadBundle(pickedBundle.id)
+		}
+	}
+
 	render()
 	{
 		return (
@@ -215,7 +225,10 @@ export class BundleStatus extends Component
 						</input>
 					</span>
 					<span>
-						<button className="ButtonWithPic" disabled={!this.isDownloadEnabled()}>
+						<button
+						className="ButtonWithPic"
+						disabled={!this.isDownloadEnabled()}
+						onClick={()=>{this.downloadHandler()}}>
 							<img src='download.png'></img>
 						</button>
 					</span>
