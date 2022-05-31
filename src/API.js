@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver'
 const URI = document.getElementsByName("API")[0].getAttribute("content")
 
 const ajax = (method, func, resolve, reject)=>
@@ -140,5 +141,14 @@ export const sendBundle = (zip, id) =>
 
 		xhr.onerror=(err)=>reject(Error(err))
 	})
+}
 
+export const downloadBundle = (id) =>
+{
+	let req = URI+"/bundle/download/"+id
+	const dummy = document.createElement('a');
+	dummy.href = req;
+	document.body.appendChild(dummy);
+	dummy.click();
+	dummy.remove()
 }
