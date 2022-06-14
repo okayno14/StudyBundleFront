@@ -262,6 +262,25 @@ export class BundleStatus extends Component
 		}
 	}
 
+	emptifyHandler()
+	{
+		const {pickedBundle} = this.props.snapshot
+		const {actions} = this.props
+		if(pickedBundle!==undefined)
+		{
+			console.log("TRACE. BundleStatus. emptifyHandler. User cleaned manually bundle.id="+pickedBundle.id)
+			let p = API.eptifyBundle(pickedBundle.id)
+			p.then(res=>
+			{
+				actions.emptifyPicked()
+			})
+			p.catch(reason=>
+			{
+				console.log("ERROR. BundleStatus. acceptHandler. Server denied request")
+			})
+		}
+	}
+
 	render()
 	{
 		return (
@@ -315,7 +334,8 @@ export class BundleStatus extends Component
 					<span>
 						<button 
 						className='ButtonWithPic'
-						disabled={!this.isEmptifyEnabled()}>
+						disabled={!this.isEmptifyEnabled()}
+						onClick={()=>{this.emptifyHandler()}}>
 							<img src='trash-can.png'></img>
 						</button>
 					</span>

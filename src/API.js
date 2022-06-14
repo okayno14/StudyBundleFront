@@ -121,3 +121,12 @@ export const acceptBundle = (id)=>
 		ajax("PUT",req,resolve,reject)
 	})
 }
+
+export const eptifyBundle = (id)=>
+{
+	let req = URI+"/bundle/"+id
+	return new Promise((resolve,reject)=>
+	{
+		ajax("DELETE", req,resolve,reject)
+	})
+}

@@ -8,7 +8,8 @@ export const actionTypes =
 	PICK_BUNDLE:"PICK_BUNDLE",
 	SEND_BUNDLE:"SEND_BUNDLE",
 	CANCEL_PICKED:"CANCEL_PICKED",
-	ACCEPT_PICKED:"ACCEPT_PICKED"
+	ACCEPT_PICKED:"ACCEPT_PICKED",
+	EMPTIFY_PICKED:"EMPTIFY_PICKED"
 }
 
 export const actions = dispatcher =>
@@ -96,6 +97,15 @@ export const actions = dispatcher =>
 		const obj=
 		{
 			type:actionTypes.ACCEPT_PICKED
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	emptifyPicked()
+	{
+		const obj=
+		{
+			type:actionTypes.EMPTIFY_PICKED
 		}
 		dispatcher.handleAction(obj)
 	}
