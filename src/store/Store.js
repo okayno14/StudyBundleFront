@@ -1,6 +1,7 @@
 import { actionTypes } from "../render/action/Actions"
 import { windows } from "../render/Render"
 import {login, logout, me} from "../API"
+import {Bundle} from "./Bundle"
 
 export class Store
 {
@@ -49,6 +50,7 @@ export class Store
 		this.getBundlesExec = this.getBundlesExec.bind(this)
 		this.pickedBundleExec = this.pickedBundleExec.bind(this)
 		this.sendBundleExec = this.sendBundleExec.bind(this)
+		this.cancelPickedExec = this.cancelPickedExec.bind(this)
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
@@ -56,6 +58,7 @@ export class Store
 		this.add(actionTypes.GET_BUNDLES, this.getBundlesExec)
 		this.add(actionTypes.PICK_BUNDLE, this.pickedBundleExec)
 		this.add(actionTypes.SEND_BUNDLE,this.sendBundleExec)
+		this.add(actionTypes.CANCEL_PICKED,this.cancelPickedExec)
 	}
 	
 	add(key, func)
@@ -169,6 +172,11 @@ export class Store
 		}
 	}
 
+	cancelPickedExec(action)
+	{
+		this.snapshot.pickedBundle = Bundle.cancel(this.snapshot.pickedBundle)
+	}
+
 	getState(){return this.snapshot}
 
 	containsID(arr, id)
@@ -188,6 +196,4 @@ export class Store
 		})
 		return a
 	}
-
-
 }

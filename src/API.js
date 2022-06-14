@@ -5,23 +5,19 @@ const ajax = (method, func, resolve, reject)=>
 {
 	const xhr = new XMLHttpRequest()
 	xhr.open(method, func)
-
 	xhr.setRequestHeader('Content-Type', 'application/json');
 	xhr.withCredentials = true;
 	xhr.send()
 	
-
 	xhr.onload=()=>
 	{
-		let resp = xhr.responseText
 		if(xhr.status !== 200)
 		{
-			reject(Error(resp))
+			reject(Error(xhr.statusText))
 			return
 		}
-		resolve(JSON.parse(resp).data)
+		resolve(JSON.parse(xhr.responseText).data)
 	}
-
 	xhr.onerror=(err)=>reject(Error(err))
 }
 
@@ -151,4 +147,13 @@ export const downloadBundle = (id) =>
 	document.body.appendChild(dummy);
 	dummy.click();
 	dummy.remove()
+}
+
+export const cancelBundle = (id) =>
+{
+	let req = URI+"/bundle/cancel/"+id
+	return new Promise((resolve,reject)=>
+	{
+		ajax("PUT",req,resolve,reject)
+	})
 }

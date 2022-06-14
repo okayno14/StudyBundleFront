@@ -210,6 +210,24 @@ export class BundleStatus extends Component
 		}
 	}
 
+	cancelHandler()
+	{
+		const {pickedBundle} = this.props.snapshot
+		if(pickedBundle!==undefined)
+		{
+			console.log("TRACE. BundleStatus. cancelHandler. User cancelled manually bundle.id="+pickedBundle.id)
+			let p = API.cancelBundle(pickedBundle.id)
+			p.then((res)=>
+			{
+				this.props.actions.cancelPicked()	
+			})
+			p.catch((reason)=>
+			{
+				console.log("ERROR. BundleStatus. cancelHandler. Server denied request")
+			})
+		}
+	}
+
 	render()
 	{
 		return (
@@ -243,7 +261,11 @@ export class BundleStatus extends Component
 						</button>
 					</span>
 					<span>
-						<button className="ButtonWithPic" disabled={!this.isCancelEnabled()}>
+						<button 
+						className="ButtonWithPic"
+						disabled={!this.isCancelEnabled()}
+						onClick={()=>{this.cancelHandler()}}
+						>
 							<img src='cancel.png'></img>
 						</button>
 					</span>

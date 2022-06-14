@@ -6,7 +6,9 @@ export const actionTypes =
 	FETCH_GROUP:"FETCH_GROUP",
 	GET_BUNDLES:"GET_BUNDLES",
 	PICK_BUNDLE:"PICK_BUNDLE",
-	SEND_BUNDLE:"SEND_BUNDLE"
+	SEND_BUNDLE:"SEND_BUNDLE",
+	CANCEL_PICKED:"CANCEL_PICKED",
+	ACCEPT_PICKED:"ACCEPT_PICKED"
 }
 
 export const actions = dispatcher =>
@@ -76,6 +78,15 @@ export const actions = dispatcher =>
 		{
 			type:actionTypes.SEND_BUNDLE,
 			data:resp
+		}
+		dispatcher.handleAction(obj)
+	},
+	
+	cancelPicked()
+	{
+		const obj=
+		{
+			type:actionTypes.CANCEL_PICKED
 		}
 		dispatcher.handleAction(obj)
 	}

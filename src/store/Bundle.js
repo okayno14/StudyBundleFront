@@ -8,5 +8,10 @@ export const Bundle  =
 			return ace.user.id === userID
 		})
 		return res !==undefined
+	},
+
+	cancel: (bundle)=>
+	{
+		return {...bundle, state:"CANCELED"}
 	}
 }
