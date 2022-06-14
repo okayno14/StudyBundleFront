@@ -1,13 +1,24 @@
 import { saveAs } from 'file-saver'
 const URI = document.getElementsByName("API")[0].getAttribute("content")
 
-const ajax = (method, func, resolve, reject)=>
+const ajax = (method, func, resolve, reject, body, isJSON=true)=>
 {
 	const xhr = new XMLHttpRequest()
 	xhr.open(method, func)
-	xhr.setRequestHeader('Content-Type', 'application/json');
+	if(isJSON)
+	{
+		xhr.setRequestHeader('Content-Type', 'application/json');
+	}
 	xhr.withCredentials = true;
-	xhr.send()
+	
+	if(body!==null)
+	{
+		xhr.send(body)
+	}
+	else
+	{
+		xhr.send()
+	}
 	
 	xhr.onload=()=>
 	{
@@ -25,28 +36,8 @@ export const login = (body)=>
 {
 	return new Promise((resolve,reject)=>
 	{
-		const xhr = new XMLHttpRequest()
-		xhr.open('PUT',URI+"/user/login",true)
-		
-		
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.withCredentials = true;
-		xhr.send(JSON.stringify(body))
-
-		xhr.onload=()=>
-		{
-			let resp = xhr.responseText
-			if(xhr.status !== 200)
-			{
-				reject(Error(resp))
-				return
-			}
-			resolve(JSON.parse(resp).data)
-			console.trace(document.cookie)
-		}
-
-		xhr.onerror=(err)=>reject(Error(err))
-	})	
+		ajax("PUT",URI+"/user/login",resolve, reject,JSON.stringify(body))
+	})
 }
 
 export const logout = () =>{return 1+1}
@@ -61,26 +52,9 @@ export const me = () =>
 
 export const getCoursesByOwner = (id) =>
 {
-	return new Promise((resolve, reject)=>{
-		const xhr = new XMLHttpRequest()
-		xhr.open('GET', URI+"/course/owner/"+id)
-
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.withCredentials = true;
-		xhr.send()
-
-		xhr.onload=()=>
-		{
-			let resp = xhr.responseText
-			if(xhr.status !== 200)
-			{
-				reject(Error(resp))
-				return
-			}
-			resolve(JSON.parse(resp).data)
-		}
-
-		xhr.onerror=(err)=>reject(Error(err))
+	return new Promise((resolve,reject)=>
+	{
+		ajax("GET",URI+"/course/owner/"+id,resolve,reject)
 	})
 }
 
@@ -112,30 +86,11 @@ export const getBundles = (courseID, userID) =>
 
 export const sendBundle = (zip, id) =>
 {
-	return new Promise((resolve,reject)=>
+	return new Promise((resolve, reject)=>
 	{
-		let formData = new FormData()
-		formData.append("uploaded_bundle",zip)
-
-		const xhr = new XMLHttpRequest()
-		xhr.open("POST", URI+"/bundle/upload/"+id)
-
-		xhr.withCredentials = true;
-		xhr.send(formData)
-
-		xhr.onload=()=>
-		{
-			let resp = xhr.responseText
-			if(xhr.status !== 200)
-			{
-				reject(Error(resp))
-				return
-			}
-			resolve(JSON.parse(resp).data)
-			console.trace(document.cookie)
-		}
-
-		xhr.onerror=(err)=>reject(Error(err))
+		let body = new FormData()
+		body.append("uploaded_bundle",zip)
+		ajax("POST", URI+"/bundle/upload/"+id,resolve,reject,body,false)
 	})
 }
 
