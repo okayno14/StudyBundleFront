@@ -2,6 +2,8 @@ import { actionTypes } from "../render/action/Actions"
 import { windows } from "../render/Render"
 import {login, logout, me} from "../API"
 import {Bundle,BundleState} from "./Bundle"
+import * as User from "./User"
+import { Course } from "./Course"
 
 export class Store
 {
@@ -104,11 +106,14 @@ export class Store
 	{
 		let b = action.myCourses
 		let a = this.snapshot.myCourses
+		let c = this.concatWithSingleID(a,b)
+		c = c.sort((courseA, courseB)=>Course.compare(courseA,courseB))
+
 
 		this.snapshot=
 		{
 			...this.snapshot,
-			myCourses: this.concatWithSingleID(a,b)
+			myCourses: c
 		}
 	}
 
@@ -124,9 +129,10 @@ export class Store
 
 	fetchGroupExec(action)
 	{
-		const{type,group} = action
+		let{type,group} = action
 		const{groupsFetched} = this.snapshot
-		
+		group.students = group.students.sort((a,b)=>User.compare(a,b))
+
 		this.snapshot =
 		{
 			...this.snapshot,

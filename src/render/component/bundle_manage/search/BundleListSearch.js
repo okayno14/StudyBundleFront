@@ -210,7 +210,7 @@ export class BundleListSearch extends Component
 		let p = API.getGroupStudents(groupID)
 		p.then((students)=>
 		{
-			console.log("INFO. BundleListSearch.onGroupChange. Received students from API")
+			console.log("INFO. BundleListSearch.onGroupChange. Received students from API")			
 			let group = groupArr.find(elem=>elem.id===groupID)
 			stateDiff.userArr=students;
 			this.setState(stateDiff)
