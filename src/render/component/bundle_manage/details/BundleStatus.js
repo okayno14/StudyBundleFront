@@ -101,20 +101,30 @@ export class BundleStatus extends Component
 		return f
 	}
 
-	isDownloadEnabled()
+	isBundleDownloadable(bundle)
 	{
-		const{pickedBundle, currentUser, myCourses} = this.props.snapshot
+		const{currentUser, myCourses} = this.props.snapshot
 
-		if(pickedBundle===undefined)
+		if(bundle===undefined)
 		{
 			return false
 		}
 
-		let f = Bundle.existsACE(pickedBundle,currentUser.id)
-		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
+		let f = Bundle.existsACE(bundle,currentUser.id)
+		let course = myCourses.find(elem=>elem.id === bundle.courseID)
 		f = f || Course.existsACE(course,currentUser) 
-		f = f && pickedBundle.state !== BundleState.EMPTY
+		f = f && bundle.state !== BundleState.EMPTY
 		return f
+	}
+	
+	isPickedDownloadable()
+	{
+		return this.isBundleDownloadable(this.props.snapshot.pickedBundle)
+	}
+
+	isBestMatchDownloadable()
+	{
+		return this.isBundleDownloadable(this.props.snapshot.bestMatchBundle)
 	}
 
 	isCancelEnabled()
@@ -215,14 +225,23 @@ export class BundleStatus extends Component
 		this.uploadRef.current.value=""
 	}
 
-	downloadHandler()
+	downloadBundle(bundle)
 	{
-		const {pickedBundle} = this.props.snapshot
-		console.log("TRACE. BundleStratus. downloadHandler. User requested bundle.id="+pickedBundle.id)
-		if(pickedBundle!==undefined)
+		console.log("TRACE. BundleStratus. downloadHandler. User requested bundle.id="+bundle.id)
+		if(bundle!==undefined)
 		{
-			API.downloadBundle(pickedBundle.id)
+			API.downloadBundle(bundle.id)
 		}
+	}
+	
+	downloadPickedHandler()
+	{
+		this.downloadBundle(this.props.snapshot.pickedBundle)
+	}
+
+	downloadBestMatchHandler()
+	{
+		this.downloadBundle(this.props.snapshot.bestMatchBundle)
 	}
 
 	cancelHandler()
@@ -310,8 +329,8 @@ export class BundleStatus extends Component
 					<span>
 						<button
 						className="ButtonWithPic"
-						disabled={!this.isDownloadEnabled()}
-						onClick={()=>{this.downloadHandler()}}>
+						disabled={!this.isPickedDownloadable()}
+						onClick={()=>{this.downloadPickedHandler()}}>
 							<img src='download.png'></img>
 						</button>
 					</span>
@@ -348,6 +367,14 @@ export class BundleStatus extends Component
 						bundle = {this.props.snapshot.bestMatchBundle} 
 						name={"Результат операции"}
 						defaultText="здесь может быть результат вызванной вами операции"/>
+					</span>
+					<span>
+						<button 
+						className='ButtonWithPic'
+						disabled={!this.isBestMatchDownloadable()}
+						onClick={()=>{this.downloadBestMatchHandler()}}>
+							<img src="download.png"/>
+						</button>
 					</span>
 				</div>
 			</div>
