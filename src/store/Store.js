@@ -1,7 +1,7 @@
 import { actionTypes } from "../render/action/Actions"
 import { windows } from "../render/Render"
 import {login, logout, me} from "../API"
-import {Bundle} from "./Bundle"
+import {Bundle,BundleState} from "./Bundle"
 
 export class Store
 {
@@ -174,7 +174,8 @@ export class Store
 
 	cancelPickedExec(action)
 	{
-		this.snapshot.pickedBundle = Bundle.cancel(this.snapshot.pickedBundle)
+		this.snapshot.pickedBundle = Bundle.changeState(this.snapshot.pickedBundle,
+														BundleState.CANCELED)
 	}
 
 	getState(){return this.snapshot}

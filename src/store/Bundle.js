@@ -1,3 +1,11 @@
+export const BundleState= 
+{
+	EMPTY:"EMPTY",
+	ACCEPTED:"ACCEPTED",
+	CANCELED:"CANCELED"
+}
+
+
 export const Bundle  = 
 {
 	existsACE: (bundle, userID)=>
@@ -10,8 +18,16 @@ export const Bundle  =
 		return res !==undefined
 	},
 
-	cancel: (bundle)=>
+	changeState: (bundle, state)=>
 	{
-		return {...bundle, state:"CANCELED"}
-	}
+		let legalStates = Object.keys(BundleState)
+		let res = legalStates.find(elem=>elem===state)
+	
+		if(res!==null)
+		{
+			return {...bundle, state:res}
+		}
+		return bundle
+	},
+
 }
