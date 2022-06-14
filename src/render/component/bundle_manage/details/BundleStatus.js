@@ -1,7 +1,7 @@
 import {Component, createRef} from 'react'
 import * as API from '../../../../API'
 import {Course} from '../../../../store/Course'
-import { Bundle } from '../../../../store/Bundle'
+import { Bundle, BundleState } from '../../../../store/Bundle'
 import * as JSZip from 'jszip/dist/jszip';
 
 import './index.css'
@@ -96,7 +96,7 @@ export class BundleStatus extends Component
 		let f = Bundle.existsACE(pickedBundle,currentUser.id)
 		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
 		f = f || Course.existsACE(course,currentUser) 
-		f = f && pickedBundle.state !== "ACCEPTED" 
+		f = f && pickedBundle.state !== BundleState.ACCEPTED 
 				
 		return f
 	}
@@ -113,7 +113,7 @@ export class BundleStatus extends Component
 		let f = Bundle.existsACE(pickedBundle,currentUser.id)
 		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
 		f = f || Course.existsACE(course,currentUser) 
-		f = f && pickedBundle.state !== "EMPTY"
+		f = f && pickedBundle.state !== BundleState.EMPTY
 		return f
 	}
 
@@ -128,7 +128,7 @@ export class BundleStatus extends Component
 
 		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
 		let f = Course.existsACE(course,currentUser) 
-		f = f && pickedBundle.state == "ACCEPTED"
+		f = f && pickedBundle.state == Bundle.ACCEPTED
 		return f
 	}
 
@@ -143,7 +143,22 @@ export class BundleStatus extends Component
 
 		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
 		let f = Course.existsACE(course,currentUser) 
-		f = f && pickedBundle.state == "CANCELED"
+		f = f && pickedBundle.state == BundleState.CANCELED
+		return f
+	}
+
+	isEmptifyEnabled()
+	{
+		const{pickedBundle, currentUser, myCourses} = this.props.snapshot
+
+		if(pickedBundle===undefined)
+		{
+			return false
+		}
+
+		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
+		let f = Course.existsACE(course,currentUser) 
+		f = f && pickedBundle.state !== BundleState.EMPTY
 		return f
 	}
 
@@ -259,7 +274,6 @@ export class BundleStatus extends Component
 						name={"Информация"} 
 						defaultText="здесь может быть ваш бандл"/>
 					</span>
-					
 					<span>
 						<input
 						className="ButtonWithPic" 
@@ -272,20 +286,14 @@ export class BundleStatus extends Component
 						</input>
 					</span>
 					<span>
+						<Circle {...this.state}/>
+					</span>
+					<span>
 						<button
 						className="ButtonWithPic"
 						disabled={!this.isDownloadEnabled()}
 						onClick={()=>{this.downloadHandler()}}>
 							<img src='download.png'></img>
-						</button>
-					</span>
-					<span>
-						<button 
-						className="ButtonWithPic"
-						disabled={!this.isCancelEnabled()}
-						onClick={()=>{this.cancelHandler()}}
-						>
-							<img src='cancel.png'></img>
 						</button>
 					</span>
 					<span>
@@ -297,7 +305,19 @@ export class BundleStatus extends Component
 						</button>
 					</span>
 					<span>
-						<Circle {...this.state}/>
+						<button 
+						className="ButtonWithPic"
+						disabled={!this.isCancelEnabled()}
+						onClick={()=>{this.cancelHandler()}}>
+							<img src='cancel.png'></img>
+						</button>
+					</span>
+					<span>
+						<button 
+						className='ButtonWithPic'
+						disabled={!this.isEmptifyEnabled()}>
+							<img src='trash-can.png'></img>
+						</button>
 					</span>
 					
 				</div>
