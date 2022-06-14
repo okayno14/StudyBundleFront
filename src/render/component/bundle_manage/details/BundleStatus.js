@@ -228,6 +228,25 @@ export class BundleStatus extends Component
 		}
 	}
 
+	acceptHandler()
+	{
+		const {pickedBundle} = this.props.snapshot
+		const {actions} = this.props
+		if(pickedBundle!==undefined)
+		{
+			console.log("TRACE. BundleStatus. acceptHandler. User accepted manually bundle.id="+pickedBundle.id)
+			let p = API.acceptBundle(pickedBundle.id)
+			p.then((res)=>
+			{
+				actions.acceptPicked()
+			})
+			p.catch((reason)=>
+			{
+				console.log("ERROR. BundleStatus. acceptHandler. Server denied request")
+			})
+		}
+	}
+
 	render()
 	{
 		return (
@@ -270,7 +289,10 @@ export class BundleStatus extends Component
 						</button>
 					</span>
 					<span>
-						<button className="ButtonWithPic" disabled={!this.isAcceptEnabled()}>
+						<button 
+						className="ButtonWithPic" 
+						disabled={!this.isAcceptEnabled()}
+						onClick={()=>{this.acceptHandler()}}>
 							<img src='check-mark.png'></img>
 						</button>
 					</span>

@@ -51,6 +51,7 @@ export class Store
 		this.pickedBundleExec = this.pickedBundleExec.bind(this)
 		this.sendBundleExec = this.sendBundleExec.bind(this)
 		this.cancelPickedExec = this.cancelPickedExec.bind(this)
+		this.acceptPickedExec = this.acceptPickedExec.bind(this)
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
@@ -59,6 +60,7 @@ export class Store
 		this.add(actionTypes.PICK_BUNDLE, this.pickedBundleExec)
 		this.add(actionTypes.SEND_BUNDLE,this.sendBundleExec)
 		this.add(actionTypes.CANCEL_PICKED,this.cancelPickedExec)
+		this.add(actionTypes.ACCEPT_PICKED,this.acceptPickedExec)
 	}
 	
 	add(key, func)
@@ -176,6 +178,12 @@ export class Store
 	{
 		this.snapshot.pickedBundle = Bundle.changeState(this.snapshot.pickedBundle,
 														BundleState.CANCELED)
+	}
+
+	acceptPickedExec(action)
+	{
+		this.snapshot.pickedBundle = Bundle.changeState(this.snapshot.pickedBundle,
+														BundleState.ACCEPTED)
 	}
 
 	getState(){return this.snapshot}

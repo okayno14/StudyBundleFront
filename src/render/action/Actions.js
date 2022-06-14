@@ -89,5 +89,14 @@ export const actions = dispatcher =>
 			type:actionTypes.CANCEL_PICKED
 		}
 		dispatcher.handleAction(obj)
+	},
+
+	acceptPicked()
+	{
+		const obj=
+		{
+			type:actionTypes.ACCEPT_PICKED
+		}
+		dispatcher.handleAction(obj)
 	}
 })

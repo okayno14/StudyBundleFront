@@ -112,3 +112,12 @@ export const cancelBundle = (id) =>
 		ajax("PUT",req,resolve,reject)
 	})
 }
+
+export const acceptBundle = (id)=>
+{
+	let req = URI+"/bundle/accept/"+id
+	return new Promise((resolve,reject)=>
+	{
+		ajax("PUT",req,resolve,reject)
+	})
+}
