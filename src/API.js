@@ -1,5 +1,16 @@
 import { saveAs } from 'file-saver'
-const URI = document.getElementsByName("API")[0].getAttribute("content")
+let href
+if(window.location.port==="3000")
+{
+	href = document.getElementsByName("API")[0].getAttribute("content")
+}
+else
+{
+	href = window.location.href.substring(0,window.location.href.length-1)
+}
+const URI = href
+console.log(URI)
+
 
 const ajax = (method, func, resolve, reject, body, isJSON=true)=>
 {
