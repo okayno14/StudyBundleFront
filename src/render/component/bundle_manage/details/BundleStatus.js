@@ -138,7 +138,7 @@ export class BundleStatus extends Component
 
 		let course = myCourses.find(elem=>elem.id === pickedBundle.courseID)
 		let f = Course.existsACE(course,currentUser) 
-		f = f && pickedBundle.state == Bundle.ACCEPTED
+		f = f && pickedBundle.state === BundleState.ACCEPTED
 		return f
 	}
 

@@ -29,10 +29,15 @@ export class Store
 			
 			prom.then((result)=>
 			{
-				this.snapshot = {
-					...this.snapshot,
-					currentWindow:windows.CHOICE,
-					currentUser:result
+				//Если не гость, то попадаем в окно выбора
+				//иначе  - стартовое окно
+				if(result.id !== -1)
+				{
+					this.snapshot = {
+						...this.snapshot,
+						currentWindow:windows.CHOICE,
+						currentUser:result
+					}
 				}
 				this.render.render(this.snapshot)
 			})
