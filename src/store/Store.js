@@ -1,4 +1,4 @@
-import { actionTypes } from "../render/action/Actions"
+import { actions, actionTypes } from "../render/action/Actions"
 import { windows } from "../render/Render"
 import {login, logout, me} from "../API"
 import {Bundle,BundleState} from "./Bundle"
@@ -47,7 +47,6 @@ export class Store
 				document.cookie = ""
 				this.render.render(this.snapshot)
 			})
-			
 		}
 
 		this.loginExec = this.loginExec.bind(this)
@@ -60,6 +59,9 @@ export class Store
 		this.cancelPickedExec = this.cancelPickedExec.bind(this)
 		this.acceptPickedExec = this.acceptPickedExec.bind(this)
 		this.emptifyPickedExec = this.emptifyPickedExec.bind(this)
+		this.autoLogin = this.autoLogin.bind(this)
+		
+
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
@@ -96,6 +98,7 @@ export class Store
 			currentWindow: windows.CHOICE,
 			..._state
 		}
+		this.autoLogin()
 	}
 
 	moveToBundleExec(action)
@@ -223,5 +226,23 @@ export class Store
 			}
 		})
 		return a
+	}
+
+	autoLogin()
+	{
+		let cooldown = (this.snapshot.currentUser.tokenExpires-Date.now())*0.75
+		cooldown = Math.round(cooldown)
+		setTimeout(()=>
+		{
+			let p = logout()
+			p.then(res=>
+				{
+					return login({email:this.snapshot.currentUser.email, pass: this.snapshot.currentUser.pass})
+				}).then(res=>
+					{
+						this.snapshot.currentUser = res
+						this.autoLogin()
+					})
+		},cooldown)
 	}
 }

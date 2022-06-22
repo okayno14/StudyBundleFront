@@ -51,7 +51,13 @@ export const login = (body)=>
 	})
 }
 
-export const logout = () =>{return 1+1}
+export const logout = () =>
+{
+	return new Promise((resolve,reject)=>
+	{
+		ajax("PUT", URI+"/user/logout", resolve,reject)
+	})
+}
 
 export const me = () =>
 {

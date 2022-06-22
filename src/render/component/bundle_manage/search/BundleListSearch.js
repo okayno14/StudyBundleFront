@@ -309,7 +309,7 @@ export class BundleListSearch extends Component
 				res = 
 				[
 					...res,
-					<option id={course.id} key={course.id}>{course.name}</option>
+					<option id={course.id} key={course.id} onClick={(e)=>{console.log(course.id)}}>{course.name}</option>
 				]
 			})
 		}
