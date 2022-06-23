@@ -1,6 +1,9 @@
-import { actionTypes } from "../render/action/Actions"
+import { actions, actionTypes } from "../render/action/Actions"
 import { windows } from "../render/Render"
 import {login, logout, me} from "../API"
+import {Bundle,BundleState} from "./Bundle"
+import * as User from "./User"
+import { Course } from "./Course"
 
 export class Store
 {
@@ -14,6 +17,7 @@ export class Store
 			currentWindow: windows.START,
 			currentUser: undefined,
 			pickedBundle: undefined,
+			bestMatchBundle: undefined,
 			groupsFetched: [],
 			myCourses: [],
 			myBundles: []
@@ -25,10 +29,15 @@ export class Store
 			
 			prom.then((result)=>
 			{
-				this.snapshot = {
-					...this.snapshot,
-					currentWindow:windows.CHOICE,
-					currentUser:result
+				//Если не гость, то попадаем в окно выбора
+				//иначе  - стартовое окно
+				if(result.id !== -1)
+				{
+					this.snapshot = {
+						...this.snapshot,
+						currentWindow:windows.CHOICE,
+						currentUser:result
+					}
 				}
 				this.render.render(this.snapshot)
 			})
@@ -38,7 +47,6 @@ export class Store
 				document.cookie = ""
 				this.render.render(this.snapshot)
 			})
-			
 		}
 
 		this.loginExec = this.loginExec.bind(this)
@@ -47,12 +55,23 @@ export class Store
 		this.fetchGroupExec = this.fetchGroupExec.bind(this)
 		this.getBundlesExec = this.getBundlesExec.bind(this)
 		this.pickedBundleExec = this.pickedBundleExec.bind(this)
+		this.sendBundleExec = this.sendBundleExec.bind(this)
+		this.cancelPickedExec = this.cancelPickedExec.bind(this)
+		this.acceptPickedExec = this.acceptPickedExec.bind(this)
+		this.emptifyPickedExec = this.emptifyPickedExec.bind(this)
+		this.autoLogin = this.autoLogin.bind(this)
+		
+
 		this.add(actionTypes.LOGIN, this.loginExec)
 		this.add(actionTypes.MOVE_TO_BUNDLE, this.moveToBundleExec)
 		this.add(actionTypes.GET_MY_COURSES, this.getMyCoursesExec)
 		this.add(actionTypes.FETCH_GROUP, this.fetchGroupExec)
 		this.add(actionTypes.GET_BUNDLES, this.getBundlesExec)
 		this.add(actionTypes.PICK_BUNDLE, this.pickedBundleExec)
+		this.add(actionTypes.SEND_BUNDLE,this.sendBundleExec)
+		this.add(actionTypes.CANCEL_PICKED,this.cancelPickedExec)
+		this.add(actionTypes.ACCEPT_PICKED,this.acceptPickedExec)
+		this.add(actionTypes.EMPTIFY_PICKED,this.emptifyPickedExec)
 	}
 	
 	add(key, func)
@@ -79,6 +98,7 @@ export class Store
 			currentWindow: windows.CHOICE,
 			..._state
 		}
+		this.autoLogin()
 	}
 
 	moveToBundleExec(action)
@@ -94,11 +114,14 @@ export class Store
 	{
 		let b = action.myCourses
 		let a = this.snapshot.myCourses
+		let c = this.concatWithSingleID(a,b)
+		c = c.sort((courseA, courseB)=>Course.compare(courseA,courseB))
+
 
 		this.snapshot=
 		{
 			...this.snapshot,
-			myCourses: this.concatWithSingleID(a,b)
+			myCourses: c
 		}
 	}
 
@@ -114,9 +137,10 @@ export class Store
 
 	fetchGroupExec(action)
 	{
-		const{type,group} = action
+		let{type,group} = action
 		const{groupsFetched} = this.snapshot
-		
+		group.students = group.students.sort((a,b)=>User.compare(a,b))
+
 		this.snapshot =
 		{
 			...this.snapshot,
@@ -133,6 +157,55 @@ export class Store
 			...this.snapshot,
 			pickedBundle:data
 		}
+	}
+
+	sendBundleExec(action)
+	{
+		const {data} = action
+		const {arr,percent} = data
+		let {myBundles} = this.snapshot
+		const b1 = arr[0]
+		let b2 = arr[1]
+		b2 = 
+		{
+			...b2,
+			percent:percent
+		}
+		
+		let bundlesFiltered = myBundles.map(elem=>
+		{
+			if(elem.id===b1.id)
+			{
+				return b1
+			}
+			return elem
+		})
+
+		this.snapshot = 
+		{
+			...this.snapshot,
+			pickedBundle:b1,
+			bestMatchBundle:b2,
+			myBundles:bundlesFiltered
+		}
+	}
+
+	cancelPickedExec(action)
+	{
+		this.snapshot.pickedBundle = Bundle.changeState(this.snapshot.pickedBundle,
+														BundleState.CANCELED)
+	}
+
+	acceptPickedExec(action)
+	{
+		this.snapshot.pickedBundle = Bundle.changeState(this.snapshot.pickedBundle,
+														BundleState.ACCEPTED)
+	}
+
+	emptifyPickedExec(action)
+	{
+		this.snapshot.pickedBundle = Bundle.changeState(this.snapshot.pickedBundle,
+			BundleState.EMPTY)
 	}
 
 	getState(){return this.snapshot}
@@ -155,5 +228,21 @@ export class Store
 		return a
 	}
 
-
+	autoLogin()
+	{
+		let cooldown = (this.snapshot.currentUser.tokenExpires-Date.now())*0.75
+		cooldown = Math.round(cooldown)
+		setTimeout(()=>
+		{
+			let p = logout()
+			p.then(res=>
+				{
+					return login({email:this.snapshot.currentUser.email, pass: this.snapshot.currentUser.pass})
+				}).then(res=>
+					{
+						this.snapshot.currentUser = res
+						this.autoLogin()
+					})
+		},cooldown)
+	}
 }

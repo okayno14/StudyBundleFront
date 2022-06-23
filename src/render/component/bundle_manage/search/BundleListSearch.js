@@ -1,4 +1,6 @@
 import {Component} from 'react'
+import {Course} from '../../../../store/Course'
+import { Bundle } from '../../../../store/Bundle'
 import * as API from '../../../../API'
 
 import './index.css'
@@ -178,12 +180,8 @@ export class BundleListSearch extends Component
 			this.setState(stateDiff)
 			return
 		}
-		
-		let search = course.courseACL_Set.reduce((contains,cur)=>
-		{
-			const{user} = cur
-			return contains || (user.id === currentUser.id)
-		},false)
+	
+		let search = Course.existsACE(course,currentUser)
 		
 		console.log("INFO. BundleListSearch.onGroupChange. Is currentUser in courseACL = "+search)
 		
@@ -212,7 +210,7 @@ export class BundleListSearch extends Component
 		let p = API.getGroupStudents(groupID)
 		p.then((students)=>
 		{
-			console.log("INFO. BundleListSearch.onGroupChange. Received students from API")
+			console.log("INFO. BundleListSearch.onGroupChange. Received students from API")			
 			let group = groupArr.find(elem=>elem.id===groupID)
 			stateDiff.userArr=students;
 			this.setState(stateDiff)
@@ -244,14 +242,9 @@ export class BundleListSearch extends Component
 		const{selected} = this.state
 		let fetchedBundle = myBundles.find(bundle=>
 		{
-			let acl = bundle.bundleACLSet
-			let containsInACL = acl.find(ace=>
-			{
-				let {user} = ace
-				return user.id === selected.studentSelected
-			})
+			let containsInACL = Bundle.existsACE(bundle,selected.studentSelected)
 			
-			return containsInACL !== undefined &&
+			return containsInACL !== false &&
 					bundle.bundleType.id===selected.bundleTypeSelected &&
 					bundle.num === selected.numSelected &&
 					bundle.courseID === selected.courseSelected 
@@ -276,7 +269,7 @@ export class BundleListSearch extends Component
 			let fetchedBundle = this.fetchBundleFromArr(bundleArr)
 			console.log("INFO. BundleListSearch. findAction. Bundle fetched id= "+fetchedBundle.id)
 			actions.getBundles(bundleArr)
-			actions.pickBundle(fetchedBundle.id)
+			actions.pickBundle(fetchedBundle)
 		})
 	}
 	
@@ -302,7 +295,7 @@ export class BundleListSearch extends Component
 			return
 		}
 		console.log("INFO. BundleListSearch. findAction. Bundle fetched from cache id= "+fetchedBundle.id)
-		actions.pickBundle(fetchedBundle.id)
+		actions.pickBundle(fetchedBundle)
 	}
 	
 	fillSelectCourse()
@@ -316,7 +309,7 @@ export class BundleListSearch extends Component
 				res = 
 				[
 					...res,
-					<option id={course.id} key={course.id}>{course.name}</option>
+					<option id={course.id} key={course.id} onClick={(e)=>{console.log(course.id)}}>{course.name}</option>
 				]
 			})
 		}
@@ -495,6 +488,7 @@ export class BundleListSearch extends Component
 				</table>
 				
 				<button type="button" 
+				className="ButtonGreen"
 				disabled=
 				{
 					this.state.selected.bundleTypeSelected===undefined || 

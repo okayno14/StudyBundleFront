@@ -5,7 +5,11 @@ export const actionTypes =
 	GET_MY_COURSES:"GET_MY_COURSES",
 	FETCH_GROUP:"FETCH_GROUP",
 	GET_BUNDLES:"GET_BUNDLES",
-	PICK_BUNDLE:"PICK_BUNDLE"
+	PICK_BUNDLE:"PICK_BUNDLE",
+	SEND_BUNDLE:"SEND_BUNDLE",
+	CANCEL_PICKED:"CANCEL_PICKED",
+	ACCEPT_PICKED:"ACCEPT_PICKED",
+	EMPTIFY_PICKED:"EMPTIFY_PICKED"
 }
 
 export const actions = dispatcher =>
@@ -65,6 +69,43 @@ export const actions = dispatcher =>
 		{
 			type:actionTypes.PICK_BUNDLE,
 			data:bundleID
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	sendBundle(resp)
+	{
+		const obj = 
+		{
+			type:actionTypes.SEND_BUNDLE,
+			data:resp
+		}
+		dispatcher.handleAction(obj)
+	},
+	
+	cancelPicked()
+	{
+		const obj=
+		{
+			type:actionTypes.CANCEL_PICKED
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	acceptPicked()
+	{
+		const obj=
+		{
+			type:actionTypes.ACCEPT_PICKED
+		}
+		dispatcher.handleAction(obj)
+	},
+
+	emptifyPicked()
+	{
+		const obj=
+		{
+			type:actionTypes.EMPTIFY_PICKED
 		}
 		dispatcher.handleAction(obj)
 	}

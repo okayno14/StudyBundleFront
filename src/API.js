@@ -1,26 +1,45 @@
-const URI = document.getElementsByName("API")[0].getAttribute("content")
+import { saveAs } from 'file-saver'
+let href
+if(window.location.port==="3000")
+{
+	href = document.getElementsByName("API")[0].getAttribute("content")
+}
+else
+{
+	href = window.location.href.substring(0,window.location.href.length-1)
+}
+const URI = href
+console.log(URI)
 
-const ajax = (method, func, resolve, reject)=>
+
+const ajax = (method, func, resolve, reject, body, isJSON=true)=>
 {
 	const xhr = new XMLHttpRequest()
 	xhr.open(method, func)
-
-	xhr.setRequestHeader('Content-Type', 'application/json');
+	if(isJSON)
+	{
+		xhr.setRequestHeader('Content-Type', 'application/json');
+	}
 	xhr.withCredentials = true;
-	xhr.send()
 	
-
+	if(body!==null)
+	{
+		xhr.send(body)
+	}
+	else
+	{
+		xhr.send()
+	}
+	
 	xhr.onload=()=>
 	{
-		let resp = xhr.responseText
 		if(xhr.status !== 200)
 		{
-			reject(Error(resp))
+			reject(Error(xhr.statusText))
 			return
 		}
-		resolve(JSON.parse(resp).data)
+		resolve(JSON.parse(xhr.responseText).data)
 	}
-
 	xhr.onerror=(err)=>reject(Error(err))
 }
 
@@ -28,31 +47,17 @@ export const login = (body)=>
 {
 	return new Promise((resolve,reject)=>
 	{
-		const xhr = new XMLHttpRequest()
-		xhr.open('PUT',URI+"/user/login",true)
-		
-		
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.withCredentials = true;
-		xhr.send(JSON.stringify(body))
-
-		xhr.onload=()=>
-		{
-			let resp = xhr.responseText
-			if(xhr.status !== 200)
-			{
-				reject(Error(resp))
-				return
-			}
-			resolve(JSON.parse(resp).data)
-			console.trace(document.cookie)
-		}
-
-		xhr.onerror=(err)=>reject(Error(err))
-	})	
+		ajax("PUT",URI+"/user/login",resolve, reject,JSON.stringify(body))
+	})
 }
 
-export const logout = () =>{return 1+1}
+export const logout = () =>
+{
+	return new Promise((resolve,reject)=>
+	{
+		ajax("PUT", URI+"/user/logout", resolve,reject)
+	})
+}
 
 export const me = () =>
 {
@@ -64,26 +69,9 @@ export const me = () =>
 
 export const getCoursesByOwner = (id) =>
 {
-	return new Promise((resolve, reject)=>{
-		const xhr = new XMLHttpRequest()
-		xhr.open('GET', URI+"/course/owner/"+id)
-
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.withCredentials = true;
-		xhr.send()
-
-		xhr.onload=()=>
-		{
-			let resp = xhr.responseText
-			if(xhr.status !== 200)
-			{
-				reject(Error(resp))
-				return
-			}
-			resolve(JSON.parse(resp).data)
-		}
-
-		xhr.onerror=(err)=>reject(Error(err))
+	return new Promise((resolve,reject)=>
+	{
+		ajax("GET",URI+"/course/owner/"+id,resolve,reject)
 	})
 }
 
@@ -110,5 +98,52 @@ export const getBundles = (courseID, userID) =>
 	return new Promise((resolve,reject)=>
 	{
 		ajax("GET", req, resolve, reject)
+	})
+}
+
+export const sendBundle = (zip, id) =>
+{
+	return new Promise((resolve, reject)=>
+	{
+		let body = new FormData()
+		body.append("uploaded_bundle",zip)
+		ajax("POST", URI+"/bundle/upload/"+id,resolve,reject,body,false)
+	})
+}
+
+export const downloadBundle = (id) =>
+{
+	let req = URI+"/bundle/download/"+id
+	const dummy = document.createElement('a');
+	dummy.href = req;
+	document.body.appendChild(dummy);
+	dummy.click();
+	dummy.remove()
+}
+
+export const cancelBundle = (id) =>
+{
+	let req = URI+"/bundle/cancel/"+id
+	return new Promise((resolve,reject)=>
+	{
+		ajax("PUT",req,resolve,reject)
+	})
+}
+
+export const acceptBundle = (id)=>
+{
+	let req = URI+"/bundle/accept/"+id
+	return new Promise((resolve,reject)=>
+	{
+		ajax("PUT",req,resolve,reject)
+	})
+}
+
+export const eptifyBundle = (id)=>
+{
+	let req = URI+"/bundle/"+id
+	return new Promise((resolve,reject)=>
+	{
+		ajax("DELETE", req,resolve,reject)
 	})
 }

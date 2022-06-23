@@ -10,7 +10,6 @@ import {Store} from './store/Store'
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals()
 
-
 const dispatcher = new Dispatch()
 const actions_ = actions(dispatcher)
 const render = new Render(actions_)
